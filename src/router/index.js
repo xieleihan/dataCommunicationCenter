@@ -73,8 +73,8 @@ const routes = [
                 name: 'DefaultPagesView',
                 component: () => import('../views/Modules/home/defaultPages.vue'),
                 meta: {
-                    title: '默认页面',
-                    breadcrumb: '默认页面',
+                    title: '起始页',
+                    breadcrumb: '起始页',
                 }
             },
             {

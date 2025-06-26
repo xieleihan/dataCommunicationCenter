@@ -1,6 +1,6 @@
 <template>
     <div class="homeAside">
-        <el-menu :default-active="defaultActive" class="el-menu-vertical-demo" unique-opened="true">
+        <el-menu  class="el-menu-vertical-demo" :unique-opened="true">
             <el-sub-menu index="1">
                 <template #title>
                     <el-icon>

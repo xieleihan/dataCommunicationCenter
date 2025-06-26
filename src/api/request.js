@@ -1,4 +1,23 @@
-import { get, post } from './index';
+import { get, post, getOut } from './index';
+// 获取环境变量
+const githubOwner = import.meta.env.VITE_GITHUB_OWNER || 'xieleihan';
+const githubRepo = import.meta.env.VITE_GITHUB_REPO || 'dataCommunicationCenter';
+
+/**
+ * 获取用户IP
+ * @param {string} params
+ * @returns res.ip
+ */
+export const getUserIp = function (params) {
+    return getOut('https://api.vore.top/api/IPdata', params);
+}
+
+/**
+ * 获取当前项目的版本信息
+ */
+export const getReleases = function (params) {
+    return getOut(`https://api.github.com/repos/${githubOwner}/${githubRepo}/commits`, params);
+}
 
 /**
  * 获取图片验证码

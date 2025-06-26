@@ -218,7 +218,7 @@ const submit = () => {
         .title {
             font-size: .15rem;
             margin-left: .1rem;
-            line-height: .1rem;
+            // line-height: .1rem;
         }
     }
 

@@ -3,7 +3,7 @@
             <el-header class="header">
                 <HomeHeader />
             </el-header>
-            <el-container v-if="isHomePage">
+            <el-container class="container" v-if="isHomePage">
                 <el-aside width="200px">
                     <HomeAside />
                 </el-aside>
@@ -43,8 +43,11 @@ const isHomePage = computed(() => route.name !== 'PersonalInformationView');
     .footer{
         background-color: $headerBgColor;
     }
-    .main{
-        box-sizing: border-box;
+    .container{
+        overflow: hidden;
+        .main {
+                box-sizing: border-box;
+            }
     }
 }
 </style>

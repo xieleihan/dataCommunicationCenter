@@ -1,0 +1,17 @@
+[
+    {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg",
+        "iconName": "Vue.js",
+        "iconColor": "#41B883"
+    },
+    {
+        "iconUrl":"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sass/sass-original.svg",
+        "iconName": "Sass",
+        "iconColor": "#CC6699"
+    },
+    {
+        "iconUrl":"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",
+        "iconName": "JavaScript",
+        "iconColor": "#F7DF1E"
+    }
+]
