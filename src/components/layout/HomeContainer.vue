@@ -1,20 +1,12 @@
 <template>
     <div class="homeContainer">
         <div class="top">
-            <div class="left">
-                <el-breadcrumb separator="/">
-                    <el-breadcrumb-item v-for="(item, index) in breadcrumbList" :key="index"
-                        :to="index !== breadcrumbList.length - 1 ? item.path : null">
-                        {{ item.name }}
-                    </el-breadcrumb-item>
-                </el-breadcrumb>
-            </div>
-            <div class="right">
-                <el-tag v-for="tag in store.getPathList" :key="tag" closable :disable-transitions="false"
-                    @click="goToPage(tag.path)" size="small" @close="handleClose(tag)">
-                    {{ tag.name }}
-                </el-tag>
-            </div>
+            <el-breadcrumb separator="/">
+                <el-breadcrumb-item v-for="(item, index) in breadcrumbList" :key="index"
+                    :to="index !== breadcrumbList.length - 1 ? item.path : null">
+                    {{ item.name }}
+                </el-breadcrumb-item>
+            </el-breadcrumb>
         </div>
         <el-divider />
         <div class="content">
@@ -27,13 +19,8 @@
 // 导入Vue-Router
 import { computed } from 'vue';
 // 导入Vue-Router
-import { useRouter,useRoute } from 'vue-router';
-// 导入pinia
-import routerStore from '../../store/Modules/router';
-// 假设 routes 的 meta 定义了面包屑的结构
-const router = useRouter();
+import { useRoute } from 'vue-router';
 const route = useRoute();
-const store = routerStore();
 const breadcrumbList = computed(() => {
     const matchedRoutes = route.matched.filter(item => item.meta && item.meta.breadcrumb);
     return matchedRoutes.map(item => ({
@@ -41,14 +28,6 @@ const breadcrumbList = computed(() => {
         name: item.meta.breadcrumb,
     }));
 });
-
-const goToPage = (path) => {
-    router.push(path)
-}
-
-const handleClose = (tag) => {
-    store.deletePath(tag);
-}
 </script>
 
 <style lang="scss" scoped>

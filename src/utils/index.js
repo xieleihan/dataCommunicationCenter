@@ -114,6 +114,16 @@ function getDeviceInfo() {
     }
 }
 
+/**
+ * 获取指定名称的 cookie 值
+ * @param name cookie 名称
+ * @returns cookie 的值，如果没有则返回空字符串
+ */
+function getCookie(name) {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? decodeURIComponent(match[2]) : '';
+}
+
 export {
     getBrowserInfo,
     getOperatingSystem,
@@ -121,5 +131,6 @@ export {
     getViewportSize,
     getDeviceType,
     getLanguage,
-    getDeviceInfo
+    getDeviceInfo,
+    getCookie
 }

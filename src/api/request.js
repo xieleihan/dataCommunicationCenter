@@ -56,3 +56,31 @@ export function superAdminRegister(data) {
 export function superAdminLogin(data) {
     return post('/private/superLogin', data);
 }
+
+/**
+ * 获取当前服务器的状态
+ */
+export function getServerStatus(params) { 
+    return get('/private/getServerStatus', params);
+}
+
+/**
+ * 获取进程列表
+ */
+export const getProcessList = (params) => {
+    return get('/processes', params);
+}
+
+/**
+ * 检验Token是否有效
+ */
+export const checkToken = (data) => {
+    return post('/private/authentication', data);
+}
+
+/**
+ * 导出用户表数据
+ */
+export const getUserData = (params) => {
+    return get('/private/getSuperUserData', params);
+}

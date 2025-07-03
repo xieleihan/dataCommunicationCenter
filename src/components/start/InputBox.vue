@@ -58,7 +58,8 @@ import { setSessionStronge } from '../../utils/strongIndex';
 import {
     ref, onMounted
 } from 'vue';
- import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
+import Cookies from 'js-cookie'
 
  // 传递的登陆还是注册
 const props = defineProps({
@@ -161,8 +162,12 @@ const validate = () => {
                             type: 'success',
                             duration: 2000
                         });
+                        const expireTime = new Date();
+                        expireTime.setTime(expireTime.getTime() + 12 * 60 * 60 * 1000); // 当前时间 + 12 小时
+
+                        Cookies.set('AUTO_TOKEN', res.token, { expires: expireTime }); // 设置 cookie 有效期为 12 小时
                         // 跳转到首页
-                        router.push('/home/defaultpages');
+                        router.push('/home/overview');
                     } else {
                         ElMessage({
                             message: res.msg || '登录失败，请稍后再试',

@@ -10,7 +10,7 @@
                             <div class="left" style="display: flex;align-items: center;">
                                 <img style="border-radius: 50%;width: 30px;height: 30px;margin-right: .1rem;"
                                     loading="lazy" :src="item.author.avatar_url" alt="头像">
-                                <p><el-tag type="info">{{ item.type }}</el-tag></p>
+                                <p><el-tag type="info">{{ item.commit.message }}</el-tag></p>
                             </div>
                             <div class="right">
                                 <el-button @click="handleDetail(item.url)" type="primary" size="small">查看详情</el-button>
@@ -48,6 +48,6 @@ onMounted(() => {
 .releasesPages{
     width: 100%;
     padding: .1rem;
-    overflow: hidden;
+    
 }
 </style>

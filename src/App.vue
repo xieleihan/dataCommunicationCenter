@@ -29,6 +29,7 @@ onMounted(() => {
         Store.setForm(formData);
         console.log("pinia存储的数据", Store.form);
     });
+    
 });
 </script>
 

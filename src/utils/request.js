@@ -24,6 +24,7 @@ const instance = axios.create({
 // 添加请求拦截器
 instance.interceptors.request.use((config) => {
     const token = getCookie('AUTO_TOKEN');
+    // console.log("获取到的token:", token);
     config.headers['Authorization'] = token;
     console.log("config:", config);
     // return config;
