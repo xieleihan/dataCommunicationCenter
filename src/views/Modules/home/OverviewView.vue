@@ -1,83 +1,141 @@
 <template>
-    <div class="overview">
-        <div id="china-map" class="left"></div>
+    <div class="defaultPages">
+        <div class="mask"></div>
+        <div class="content">
+            <div class="left">
+                <div class="top">
+                    <div class="img" v-for="(item, index) in iconData" :key="index">
+                        <img loading="lazy" :src="item.iconUrl" :alt="item.iconName" />
+                        <!-- <div  class="mask"></div> -->
+                    </div>
+                </div>
+                <div class="bottom">
+                    <div class="title">数通中台</div>
+                    <div class="desc">--通用数据管理</div>
+                    <div class="buttonBox">
+                        <el-button type="info" :icon="ElementPlus">访问项目</el-button>
+                        <el-button type="primary">联系我们</el-button>
+                    </div>
+                </div>
+            </div>
+            <div class="right">
+                <div class="rightClass">
+                    <IpBox />
+                    <ReleasesPages />
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
-import * as echarts from 'echarts';
-import { china } from '../../../utils/china';
+import iconData from '../../../assets/json/stackIcon.json';
+import { ElementPlus } from '@element-plus/icons-vue';
 
-function renderMap() {
-    const chartDom = document.getElementById('china-map');
-    const myChart = echarts.init(chartDom);
-
-    // @ts-ignore
-    echarts.registerMap('china', china);
-
-    const option = {
-        tooltip: {
-            formatter: (params) => {
-                return `${params.seriesName}<br />${params.name}：${params.value || 0}`;
-            },
-        },
-        visualMap: {
-            min: 0,
-            max: 1500,
-            left: 'left',
-            top: 'bottom',
-            text: ['高', '低'],
-            inRange: {
-                color: ['#fbf8f3', '#94d2a5'],
-            },
-            show: true,
-        },
-        geo: {
-            map: 'china',
-            roam: false,
-            zoom: 1.23,
-            label: {
-                show: true,
-                fontSize: 10,
-                color: 'rgba(0,0,0,0.7)',
-            },
-            itemStyle: {
-                normal: {
-                    borderColor: 'rgba(0, 0, 0, 0.2)',
-                },
-                emphasis: {
-                    areaColor: 'tomato',
-                    shadowOffsetX: 0,
-                    shadowOffsetY: 0,
-                    shadowBlur: 20,
-                    borderWidth: 0,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)',
-                },
-            },
-        },
-        series: [
-            {
-                name: '信息量',
-                type: 'map',
-                geoIndex: 0,
-                data: dataList.value,
-            },
-        ],
-    };
-
-    myChart.setOption(option);
-}
+// 导入组件
+import IpBox from '../../../components/start/IpBox.vue';
+import ReleasesPages from '../../../components/start/ReleasesPages.vue';
 </script>
 
-<style lang="scss" scoped>
-.overview{
+<style scoped lang="scss">
+.defaultPages {
     width: 100%;
-    height: calc(100% - .35rem);
-    display: flex;
-    .left{
-        width: 50%;
+    position: relative;
+    height: 100%;
+    background: url('../../../assets/images/bg.webp') no-repeat center center / cover;
+
+    .mask {
+        width: 100%;
         height: 100%;
+        backdrop-filter: blur(5px);
+        position: absolute;
+        background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .content {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        display: flex;
+        padding: .1rem;
+
+        .left,
+        .right {
+            width: 50%;
+            height: 100%;
+        }
+
+        .left {
+            width: 30%;
+            border-right: 1px solid rgba(255, 255, 255, 0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            .top {
+                width: 70%;
+                height: 15%;
+                display: flex;
+                margin-bottom: .1rem;
+                justify-content: space-between;
+                align-items: center;
+                background-color: rgba(255, 255, 255, 0.3);
+                /* backdrop-filter: blur(5px); */
+                padding: 0 .1rem;
+                border-radius: .05rem;
+
+                .img {
+                    height: 80%;
+                    aspect-ratio: 1/1;
+                    transition: all .3s ease-in-out;
+                    position: relative;
+
+                    img {
+                        pointer-events: none;
+                        z-index: -1;
+                    }
+                }
+            }
+
+            .bottom {
+                width: 70%;
+
+                .title {
+                    color: #fff;
+                    font-size: .2rem;
+                    letter-spacing: .1rem;
+                    text-align: center;
+                }
+
+                .desc {
+                    color: #fff;
+                    font-size: .1rem;
+                    text-align: end;
+                    margin-top: .1rem;
+                }
+
+                .buttonBox {
+                    display: flex;
+                    margin-top: .2rem;
+                    justify-content: center;
+                }
+            }
+        }
+
+        .right {
+            width: 70%;
+            height: 100%;
+            padding: .1rem 0 .1rem .1rem;
+
+            .rightClass {
+                background-color: rgba(255, 255, 255, 0.3);
+                width: 100%;
+                height: 100%;
+                border-radius: .05rem;
+                overflow: scroll;
+            }
+        }
     }
 }
 </style>
