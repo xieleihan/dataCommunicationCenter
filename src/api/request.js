@@ -84,3 +84,31 @@ export const checkToken = (data) => {
 export const getUserData = (params) => {
     return get('/private/getSuperUserData', params);
 }
+
+/**
+ * 获取中国访问列表
+ */
+export const getChinaAccessList = (params) => {
+    return get('/private/get-china-datalist', params);
+}
+
+/**
+ * 获取后端环境变量
+ */
+export const getEnvVariables = (params) => {
+    return get('/private/getEnvConfig', params);
+}
+
+/**
+ * 修改后端环境变量
+ */
+export const setEnvVariables = (data) => {
+    return post('/private/setEnvConfig', data);
+}
+
+/**
+ * 上传图片
+ */
+export const uploadImage = (data) => {
+    return post('/upload', data);
+}

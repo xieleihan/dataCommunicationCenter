@@ -132,6 +132,52 @@ const routes = [
                     requiresAuth: true, // 需要验证
                     permissions: ['admin', 'ordinary'], // 需要的权限
                 },
+            },
+            {
+                path: 'environmentVariable',
+                name: 'EnvironmentVariableView',
+                component: () => import('../views/Modules/system/EnvironmentVariableView.vue'),
+                meta: {
+                    title: '修改环境变量',
+                    breadcrumb: '修改环境变量',
+                    requiresAuth: true, // 需要验证
+                    permissions: ['admin'], // 需要的权限
+                },
+            }
+        ]
+    },
+    {
+        path: '/shoping',
+        name: 'ShopingView',
+        component: () => import('../views/ShopingView.vue'),
+        meta: {
+            title: '商品管理',
+            breadcrumb: '商品管理',
+            requiresAuth: true, // 需要验证
+            permissions: ['admin', 'ordinary'], // 需要的权限
+        },
+        children: [
+            {
+                path: 'shopingAllView',
+                name: 'ShopingAllView',
+                component: () => import('../views/Modules/shoping/ShopingAllView.vue'),
+                meta: {
+                    title: '商品列表',
+                    breadcrumb: '商品列表',
+                    requiresAuth: true, // 需要验证
+                    permissions: ['admin', 'ordinary'], // 需要的权限
+                },
+            },
+            {
+                path: 'shopingAddView',
+                name: 'ShopingAddView',
+                component: () => import('../views/Modules/shoping/ShopingAddView.vue'),
+                meta: {
+                    title: '添加商品',
+                    breadcrumb: '添加商品',
+                    requiresAuth: true, // 需要验证
+                    permissions: ['admin', 'ordinary'], // 需要的权限
+                },
             }
         ]
     },

@@ -16,9 +16,9 @@ const getCookie = (name) => {
 const instance = axios.create({
     baseURL: import.meta.env.VITE_BASE_API, // api的base_url
     timeout: 5000, // 请求超时时间
-    headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
-    },
+    // headers: {
+    //     'Content-Type': 'application/json;charset=UTF-8',
+    // },
 });
 
 // 添加请求拦截器

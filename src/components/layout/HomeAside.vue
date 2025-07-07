@@ -33,6 +33,27 @@
                         <el-menu-item index="1-5">访问情况</el-menu-item>
                     </router-link>
                 </el-menu-item-group>
+                <el-menu-item-group title="环境变量">
+                    <router-link to="/home/environmentVariable">
+                        <el-menu-item index="1-6">修改环境</el-menu-item>
+                    </router-link>
+                </el-menu-item-group>
+            </el-sub-menu>
+            <el-sub-menu index="2">
+                <template #title>
+                    <el-icon>
+                        <ElementPlus />
+                    </el-icon>
+                    <span>管理</span>
+                </template>
+                <el-menu-item-group title="在售商品">
+                    <router-link to="/shoping/shopingAllView">
+                        <el-menu-item index="2-1">商品列表</el-menu-item>
+                    </router-link>
+                    <router-link to="/shoping/shopingAddView">
+                        <el-menu-item index="2-2">添加商品</el-menu-item>
+                    </router-link>
+                </el-menu-item-group>
             </el-sub-menu>
         </el-menu>
     </div>
@@ -62,6 +83,18 @@ const routes = [
     {
         path: '/home/interviewView',
         number: '1-5'
+    },
+    {
+        path: '/home/environmentVariable',
+        number: '1-6'
+    },
+    {
+        path : '/shoping/shopingAllView',
+        number: '2-1'
+    },
+    {
+        path : '/shoping/shopingAddView',
+        number: '2-2'
     }
 ]
 

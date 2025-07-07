@@ -26,7 +26,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped lang="scss"> 
 .homeView {
     width: 100%;
     height: 100%;
