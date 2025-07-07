@@ -27,6 +27,7 @@
     "scss-loader": "^0.0.1",
     "style-loader": "^4.0.0",
     "swiper": "^11.2.10",
+    "terser": "^5.43.1",
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-restart": "^0.4.2",
     "vite-plugin-vconsole": "^2.1.1",
