@@ -21,6 +21,9 @@
             <!-- 原价 -->
             <div class="currentPrice">{{ formattedOriginalPrice }}</div>
         </div>
+        <div class="tabBox">
+            <TabCom :productFaq="ShopingPreviewObject.faq" />
+        </div>
     </div>
 </template>
 
@@ -31,6 +34,7 @@ import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+import TabCom from '../../../components/shopping/TabCom.vue';
 
 const props = defineProps({
     ShopingPreviewObject: {
@@ -40,7 +44,9 @@ const props = defineProps({
             title: '',
             description: '',
             originalPrice: '',
-            currentPrice: ''
+            currentPrice: '',
+            faq: '',// 商品FAQ
+            dynamicTags: [] // 商品动态标签
         })
     }
 });
@@ -68,6 +74,7 @@ const formattedCurrentPrice = computed(() => {
     height: 100%;
     border: 1px solid #ccc;
     font-size: .1rem;
+    overflow: auto;
     ::v-deep(img){
         max-width: 100% !important;
         min-width: 100% !important;
@@ -119,6 +126,11 @@ const formattedCurrentPrice = computed(() => {
             color: #ccc;
             
         }
+    }
+    .tabBox{
+        width: 100%;
+        margin-top: .1rem;
+        padding: 0 .1rem;
     }
 }
 </style>

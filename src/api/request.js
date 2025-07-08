@@ -2,7 +2,7 @@ import { get, post, getOut } from './index';
 // 获取环境变量
 const githubOwner = import.meta.env.VITE_GITHUB_OWNER || 'xieleihan';
 const githubRepo = import.meta.env.VITE_GITHUB_REPO || 'dataCommunicationCenter';
-const ExchangeRate_API = import.meta.env.VITE_EXCHANGE_RATE_API
+const ExchangeRate_API = import.meta.env.VITE_EXCHANGE_RATE_API;
 
 /**
  * 获取用户IP
