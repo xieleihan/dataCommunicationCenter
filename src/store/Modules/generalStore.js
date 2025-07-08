@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 
 // 导出通用模块数据
 export const useGeneralStore = defineStore('generalStore', {
+    persist: true, // 开启持久化存储
     state: () => ({
         form: {
             ipinfo: {
