@@ -114,6 +114,8 @@ export const uploadImage = (data) => {
     return post('/upload', data);
 }
 
+/* --------以下还没验证--------- */
+
 /**
  * 获取当前实时汇率信息
  * @returns {object} data 返回一个对象
@@ -134,4 +136,34 @@ export const getExchangeRate = (params) => {
  */
 export const initAddShoping = (data) => {
     return post('/private/initAddShoping', data);
+}
+
+/**
+ * 新增的product加入数据库接口
+ * @param {*} data 
+ * @returns 
+ */
+export const saveShopingObj = (data) => {
+    return post('/private/saveShopingObj', data);
+}
+
+/**
+ * 发布公告的接口,主要实现就是新增的时候给存量用户或者是运营发送邮件
+ */
+export const publishMail = (data) => {
+    return post('/private/publishMail', data);
+}
+
+/**
+ * 获取所有入库商品列表(公共)
+ */
+export const getShoppingList = (params) => {
+    return get('/public/getShoppingList', params);
+}
+
+/**
+ * 变动商品的信息(私有)
+ */
+export const changeShoppingProductInfo = (data) => {
+    return post('/private/changeShoppingProductInfo', data);
 }

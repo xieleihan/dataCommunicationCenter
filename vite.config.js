@@ -6,6 +6,7 @@ import * as path from 'path';
 import { visualizer } from 'rollup-plugin-visualizer';
 import ViteRestart from 'vite-plugin-restart';
 import legacyPlugin from '@vitejs/plugin-legacy';
+import { terser } from 'rollup-plugin-terser';
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -24,8 +25,21 @@ export default defineConfig({
           }
           return `assets/[name]-[hash][extname]`;
         },
-      }
-    }
+      },
+      plugins: [
+        terser()
+      ]
+    },
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true, // 删除 console
+        drop_debugger: true, // 删除 debugger
+      },
+      format: {
+        comments: false, // 删除注释
+      },
+    },
   },
   plugins: [
     vue(),

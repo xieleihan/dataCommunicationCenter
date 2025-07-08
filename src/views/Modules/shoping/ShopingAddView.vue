@@ -181,8 +181,8 @@
                 </div>
             </div>
             <div class="btnBox">
-                <el-button type="info">发布公告</el-button>
-                <el-button type="primary">保存</el-button>
+                <el-button type="info" @click="publishMail(ShopingPreviewObject)">发布公告</el-button>
+                <el-button type="primary" @click="saveShopObj(ShopingPreviewObject)">保存</el-button>
             </div>
         </div>
         <div class="right">
@@ -338,6 +338,16 @@ const addProoductInfo = (key, value) => {
     ShopingPreviewObject.tableData = [...ShopingPreviewObject.tableData, { key, value }]
     addProoductInfoKeyText.value = ''
     addProoductInfoValueText.value = ''
+}
+
+// 保存数据到数据库
+const saveShopObj = (obj) => {
+    
+}
+
+// 发布公告逻辑
+const publishMail = (obj) => {
+    
 }
 
 onMounted(() => {
