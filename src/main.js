@@ -10,6 +10,8 @@ import store from './store/index';
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+// 导入自定义插件
+import DecimalPlugin from './utils/decimalPlugin.js';
 
 const app = createApp(App);
 
@@ -23,5 +25,7 @@ app.use(router);
 app.use(store);
 // 使用element-plus
 app.use(ElementPlus)
+// 使用自定义插件
+app.use(DecimalPlugin);
 
 app.mount('#app');
