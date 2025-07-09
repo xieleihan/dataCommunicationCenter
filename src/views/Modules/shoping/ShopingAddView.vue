@@ -110,7 +110,18 @@
                         </div>
                     </div>
                     <div class="item">
-                        <p>商品FAQ:</p>
+                        <p>商品FAQ:
+                            <el-popover
+                                class="box-item"
+                                title="提示"
+                                content="需要严格按照F:xxx,Q:xxx;格式书写"
+                                placement="top"
+                              >
+                                <template #reference>
+                                    <el-icon><Warning /></el-icon>
+                                </template>
+                              </el-popover>
+                        </p>
                         <el-input v-model="ShopingPreviewObject.faq" type="textarea" placeholder="请输入商品FAQ" />
                     </div>
 
