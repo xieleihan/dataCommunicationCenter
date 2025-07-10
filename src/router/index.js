@@ -178,7 +178,64 @@ const routes = [
                     requiresAuth: true, // 需要验证
                     permissions: ['admin', 'ordinary'], // 需要的权限
                 },
+            },
+            {
+                path: 'storeManagement',
+                name: 'StoreManagementView',
+                component: () => import('../views/Modules/shoping/management/StoreManagement.vue'),
+                meta: {
+                    title: '店铺管理',
+                    breadcrumb: '店铺管理',
+                    requiresAuth: true, // 需要验证
+                    permissions: ['admin', 'ordinary'], // 需要的权限
+                },
+            },
+            {
+                path: 'customerInformation',
+                name: 'CustomerInformationView',
+                component: () => import('../views/Modules/shoping/messages/CustomerInformation.vue'),
+                meta: {
+                    title: '客户信息管理',
+                    breadcrumb: '客户信息管理',
+                    requiresAuth: true, // 需要验证
+                    permissions: ['admin', 'ordinary'], // 需要的权限
+                },
+            },
+            {
+                path: 'orderManagement',
+                name: 'OrderManagementView',
+                component: () => import('../views/Modules/shoping/management/OrderManagement.vue'),
+                meta: {
+                    title: '订单管理',
+                    breadcrumb: '订单管理',
+                    requiresAuth: true, // 需要验证
+                    permissions: ['admin', 'ordinary'], // 需要的权限
+                },
             }
+        ]
+    },
+    {
+        path: '/analyze',
+        name: 'AnalyzeView',
+        component: () => import('../views/AnalyzeView.vue'),
+        meta: {
+            title: '数据分析',
+            breadcrumb: '数据分析',
+            requiresAuth: true, // 需要验证
+            permissions: ['admin', 'ordinary'], // 需要的权限
+        },
+        children: [
+            {
+                path: 'shopingOverview',
+                name: 'ShopingOverviewView',
+                component: () => import('../views/Modules/analyze/ShopingOverview.vue'),
+                meta: {
+                    title: '商品概览',
+                    breadcrumb: '商品概览',
+                    requiresAuth: true, // 需要验证
+                    permissions: ['admin', 'ordinary'], // 需要的权限
+                },
+            },
         ]
     },
     {
@@ -210,6 +267,11 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
     // console.log('路由变化:', to.fullPath);
+    if (to.meta && to.meta.title) {
+        document.title = to.meta.title;
+    } else {
+        document.title = '数据中台 --后台管理系统'; // 可选：当没有 meta.title 时的默认标题
+    }
     // 检查是否需要验证
     if (to.matched.some((record) => record.meta.requiresAuth)) {
         const token = getCookie('AUTO_TOKEN');

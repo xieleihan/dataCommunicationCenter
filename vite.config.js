@@ -85,4 +85,10 @@ export default defineConfig({
       generateScopedName: '[name]__[local]__[hash:base64:6]', // CSS模块化
     }
   },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'), // 设置 @ 指向 src 目录
+    }
+  },
+  base: '/dataCommunicationCenter/'
 })

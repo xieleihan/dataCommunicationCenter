@@ -1,6 +1,10 @@
 <template>
     <div class="homeAside">
-        <el-menu :default-active="activtyMenu" class="el-menu-vertical-demo" :unique-opened="true">
+        <el-menu
+            :default-active="activtyMenu"
+            class="el-menu-vertical-demo"
+            :unique-opened="true"
+        >
             <el-sub-menu index="1">
                 <template #title>
                     <el-icon>
@@ -52,6 +56,32 @@
                     </router-link>
                     <router-link to="/shoping/shopingAddView">
                         <el-menu-item index="2-2">添加商品</el-menu-item>
+                    </router-link>
+                </el-menu-item-group>
+                <el-menu-item-group title="店铺管理">
+                    <router-link to="/shoping/storeManagement">
+                        <el-menu-item index="2-3">店铺信息</el-menu-item>
+                    </router-link>
+                    <router-link to="/shoping/orderManagement">
+                        <el-menu-item index="2-4">订单管理</el-menu-item>
+                    </router-link>
+                </el-menu-item-group>
+                <el-menu-item-group title="消息管理">
+                    <router-link to="/shoping/customerInformation">
+                        <el-menu-item index="2-5">消息列表</el-menu-item>
+                    </router-link>
+                </el-menu-item-group>
+            </el-sub-menu>
+            <el-sub-menu index="3">
+                <template #title>
+                    <el-icon>
+                        <DataLine />
+                    </el-icon>
+                    <span>数据分析</span>
+                </template>
+                <el-menu-item-group title="销售情况">
+                    <router-link to="/analyze/shopingOverview">
+                        <el-meun-item index="3-1">产品概览</el-meun-item>
                     </router-link>
                 </el-menu-item-group>
             </el-sub-menu>
