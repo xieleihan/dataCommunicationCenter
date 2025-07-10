@@ -17,7 +17,7 @@
 
 <script setup>
 import MessagesList from '../../../../components/shopping/messages/MessagesList.vue';
-import MessagesDetail from '../../../../components/shopping/messages/MessagesDetail.vue';
+import MessagesDetail from '../../../../components/shopping/messages/MessagesDetails.vue';
 </script>
 
 <style lang="scss" scoped>
