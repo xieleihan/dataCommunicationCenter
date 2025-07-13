@@ -81,7 +81,7 @@
                 <div class="tagBox">
                     <div class="item">
                         <p>商品详情(图片流):</p>
-                        <el-upload :action="base_url" list-type="picture-card" :on-success="handleSuccess"
+                        <el-upload :action="base_url" list-type="picture-card" :on-success="handleProductSuccess"
                             :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
                             <el-icon>
                                 <Plus />
@@ -95,32 +95,38 @@
                         <p>详细参数:</p>
                         <div>
                             <el-radio-group v-model="editType">
-                                <el-radio label="edit" value="edit">修改</el-radio>
+                                <el-radio label="edit" value="edit">删除</el-radio>
                                 <el-radio label="add" value="add">新增</el-radio>
                             </el-radio-group>
                             <!-- 修改区域 -->
-                            <el-input v-model="editProductInfoKeyText" v-if="editType === 'edit'"
-                                placeholder="请输入搜索的属性名" />
-                            <el-table v-if="editType === 'edit'"></el-table>
+                            <el-input @input="changeInputValue" style="margin-right: .1rem;"
+                                v-model="editProductInfoKeyText" v-if="editType === 'edit'" placeholder="请输入搜索的属性名" />
+                            <el-table :data="filteredData" v-if="editType === 'edit'">
+                                <el-table-column prop="key" label="商品属性" />
+                                <el-table-column prop="value" label="属性值" />
+                                <el-table-column label="操作">
+                                    <template #default="scope">
+                                        <el-button type="danger"
+                                            @click="deleteTableData(scope.row.key, scope.row.value)">删除</el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
                             <!-- 新增区域 -->
                             <el-input v-model="addProoductInfoKeyText" v-if="editType === 'add'" placeholder="属性名" />
                             <el-input v-model="addProoductInfoValueText" v-if="editType === 'add'" placeholder="属性值" />
-                            <el-button v-if="editType === 'add'" 
+                            <el-button v-if="editType === 'add'"
                                 @click="addProoductInfo(addProoductInfoKeyText, addProoductInfoValueText)">新增</el-button>
                         </div>
                     </div>
                     <div class="item">
                         <p>商品FAQ:
-                            <el-popover
-                                class="box-item"
-                                title="提示"
-                                content="需要严格按照F:xxx,Q:xxx;格式书写"
-                                placement="top"
-                              >
+                            <el-popover class="box-item" title="提示" content="需要严格按照F:xxx,Q:xxx;格式书写" placement="top">
                                 <template #reference>
-                                    <el-icon><Warning /></el-icon>
+                                    <el-icon>
+                                        <Warning />
+                                    </el-icon>
                                 </template>
-                              </el-popover>
+                            </el-popover>
                         </p>
                         <el-input v-model="ShopingPreviewObject.faq" type="textarea" placeholder="请输入商品FAQ" />
                     </div>
@@ -151,7 +157,7 @@
 import { reactive, ref, computed, onMounted, nextTick, watch } from 'vue';
 import { Plus } from '@element-plus/icons-vue';
 import ShopingPreviewView from './ShopingPreviewView.vue';
-import { getExchangeRate,initAddShoping } from '../../../api/request';
+import { getExchangeRate, initAddShoping, deleteUploadImage } from '../../../api/request';
 import { nanoid } from 'nanoid';
 import { ElMessage } from 'element-plus';
 import { copyText } from '../../../utils/copyText';
@@ -184,11 +190,12 @@ const editType = ref('add'); // 编辑类型: edit(修改) | add(新增)
 const addProoductInfoKeyText = ref(''); // 新增属性名
 const addProoductInfoValueText = ref(''); // 新增属性值
 const editProductInfoKeyText = ref(''); // 搜索修改属性名
+const filteredData = ref([]); // 过滤后的数据
 
 const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
 
-// 处理上传成功的回调
+// 处理上传成功的回调(轮播图)
 const handleSuccess = (uploadFile) => {
     console.log(uploadFile)
     const obj = {
@@ -199,9 +206,47 @@ const handleSuccess = (uploadFile) => {
     ShopingPreviewObject.fileList = [...ShopingPreviewObject.fileList, obj]
 }
 
+// 商品详情
+const handleProductSuccess = (uploadFile) => {
+    console.log(uploadFile)
+    const obj = {
+        url: uploadFile.data.url,
+        name: uploadFile.data.alt,
+        uid: Date.now() + Math.random().toString(36).substr(2, 9),
+    }
+    ShopingPreviewObject.productList = [...ShopingPreviewObject.productList, obj]
+}
+
 // 处理上传文件被删除的回调
-const handleRemove = (uploadFile, uploadFiles) => {
-    console.log(uploadFile, uploadFiles)
+const handleRemove = (uploadFile) => {
+    console.log('删除的文件:', JSON.parse(JSON.stringify(uploadFile.response.data.alt)).split('.')[0])
+    deleteUploadImage({
+        filename: JSON.parse(JSON.stringify(uploadFile.response.data.alt)),
+    }).then((res) => {
+        if(res.code === 200) {
+            ElMessage({
+                message: '删除成功',
+                type: 'success',
+                duration: 2000
+            })
+        } else {
+            ElMessage({
+                message: '删除失败',
+                type: 'error',
+                duration: 2000
+            })
+        }
+    }).catch((err) => {
+        console.error('删除失败:', err)
+        ElMessage({
+            message: '删除失败',
+            type: 'error',
+            duration: 2000
+        })
+    })
+    // 从轮播图数组中删除该文件
+    console.log(ShopingPreviewObject.fileList)
+    ShopingPreviewObject.fileList = ShopingPreviewObject.fileList.filter(item => item.name != JSON.parse(JSON.stringify(uploadFile.response.data.alt)))
 }
 
 // 处理预览图片的回调
@@ -285,6 +330,22 @@ const addProoductInfo = (key, value) => {
     addProoductInfoValueText.value = ''
 }
 
+// 删除产品详情
+const deleteTableData = (key, value) => {
+    console.log('删除的属性:', key, value)
+    // 过滤掉被删除的属性
+    ShopingPreviewObject.tableData = ShopingPreviewObject.tableData.filter(item => item.key !== key || item.value !== value)
+    nextTick(() => {
+        // 重新过滤数据
+        filteredData.value = ShopingPreviewObject.tableData
+    })
+    ElMessage({
+        message: '删除成功',
+        type: 'success',
+        duration: 2000
+    })
+}
+
 // 保存数据到数据库
 const saveShopObj = (obj) => {
     
@@ -295,26 +356,38 @@ const publishMail = (obj) => {
     
 }
 
+// 处理输入框的变化
+const changeInputValue = (e) => {
+    console.log('输入框变化:', e)
+    // 过滤出匹配的属性
+    console.log('过滤前的表格数据:', ShopingPreviewObject.tableData.filter(item => item.key.includes(e)))
+    filteredData.value = ShopingPreviewObject.tableData.filter(item => item.key.includes(e))
+    
+    
+}
+
 onMounted(() => {
     // 获取实时汇率
-    getExchangeRate({}).then((res) => {
-        if (res.result === 'success') {
-            exchangeRateObj.value = res.conversion_rates
-            exchangeRateValue.value = res.conversion_rates[exchangeRate.value] || 1
-            exchangeRateChangeValue.value = (ShopingPreviewObject.currentPrice * exchangeRateValue.value).toFixed(2)
-        } else {
-            console.error('获取实时汇率失败:', res)
-        }
-    }).catch((err) => {
-        console.error('获取实时汇率失败:', err)
-    })
+    if (Object.keys(exchangeRateObj.value).length === 0) {
+        getExchangeRate({}).then((res) => {
+            if (res.result === 'success') {
+                exchangeRateObj.value = res.conversion_rates
+                exchangeRateValue.value = res.conversion_rates[exchangeRate.value] || 1
+                exchangeRateChangeValue.value = (ShopingPreviewObject.currentPrice * exchangeRateValue.value).toFixed(2)
+            } else {
+                console.error('获取实时汇率失败:', res)
+            }
+        }).catch((err) => {
+            console.error('获取实时汇率失败:', err)
+        })
+    }
     // 生成唯一一个ID
     const id = nanoid();
     console.log('生成的唯一ID:', id)
     // 初始化AddShoping数据
     initAddShoping({ id }).then((res) => {
         if (res.code === 200) {
-            ShopingPreviewObject.link = res.link
+            ShopingPreviewObject.link = id
         }
     }).catch((err) => {
         console.error('初始化AddShoping数据失败:', err)

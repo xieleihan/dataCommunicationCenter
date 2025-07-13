@@ -90,5 +90,5 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'), // 设置 @ 指向 src 目录
     }
   },
-  base: '/dataCommunicationCenter/'
+  // base: '/dataCommunicationCenter/'
 })

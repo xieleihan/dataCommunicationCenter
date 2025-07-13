@@ -22,7 +22,7 @@
             <div class="currentPrice">{{ formattedOriginalPrice }}</div>
         </div>
         <div class="tabBox">
-            <TabCom :productFaq="ShopingPreviewObject.faq" />
+            <TabCom :productFaq="ShopingPreviewObject.faq" :tableData="ShopingPreviewObject.tableData" :productList="ShopingPreviewObject.productList" />
         </div>
     </div>
 </template>
@@ -46,7 +46,8 @@ const props = defineProps({
             originalPrice: '',
             currentPrice: '',
             faq: '',// 商品FAQ
-            dynamicTags: [] // 商品动态标签
+            dynamicTags: [], // 商品动态标签
+            productList: [], // 商品详情
         })
     }
 });

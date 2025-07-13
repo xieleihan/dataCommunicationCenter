@@ -81,7 +81,7 @@
                 </template>
                 <el-menu-item-group title="销售情况">
                     <router-link to="/analyze/shopingOverview">
-                        <el-meun-item index="3-1">产品概览</el-meun-item>
+                        <el-menu-item index="3-1">产品概览</el-menu-item>
                     </router-link>
                 </el-menu-item-group>
             </el-sub-menu>

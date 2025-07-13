@@ -2,10 +2,10 @@
     <div class="tabCom">
         <el-tabs v-model="activeName" stretch="true">
             <el-tab-pane name="productList" label="商品详情">
-                <!-- <ProductList :productList="productList" /> -->
+                <ProductList :productList="productList" />
             </el-tab-pane>
             <el-tab-pane name="tableData" label="详细数据">
-                <!-- <ProductInfo :productInfo="productInfo" /> -->
+                <ProductInfo :productInfo="tableData" />
             </el-tab-pane>
             <el-tab-pane name="faq" label="常见问题">
                 <ProductFaq :productFaq="productFaq" />
@@ -26,13 +26,13 @@ const props = defineProps({
         type: Array,
         default: () => []
     },
-    productInfo: {
+    tableData: {
         type: Object,
-        default: () => ({})
+        default: () => ([])
     },
     productFaq: {
-        type: Array,
-        default: () => []
+        type: String,
+        default: () => ('')
     }
 });
 

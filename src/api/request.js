@@ -114,15 +114,13 @@ export const uploadImage = (data) => {
     return post('/upload', data);
 }
 
-/* --------以下还没验证--------- */
-
 /**
  * 获取当前实时汇率信息
  * @returns {object} data 返回一个对象
  * @returns {String} data.result 返回success
  * @returns {String} data.base_code 返回基础货币代码
  * @returns {Object} data.conversion_rates 返回汇率转换对象
- */
+*/
 export const getExchangeRate = (params) => {
     return getOut(`https://v6.exchangerate-api.com/v6/${ExchangeRate_API}/latest/CNY`, params);
 }
@@ -133,10 +131,19 @@ export const getExchangeRate = (params) => {
  * @returns {Object} data 返回一个对象
  * @returns {String} data.code 返回状态码
  * @returns {String} data.link 返回商品链接
- */
+*/
 export const initAddShoping = (data) => {
     return post('/private/initAddShoping', data);
 }
+
+/**
+ * 删除上传的图片
+ */
+export const deleteUploadImage = (data) => {
+    return post('/deleteUpload', data);
+}
+
+/* --------以下还没验证--------- */
 
 /**
  * 新增的product加入数据库接口
