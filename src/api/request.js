@@ -143,16 +143,18 @@ export const deleteUploadImage = (data) => {
     return post('/deleteUpload', data);
 }
 
-/* --------以下还没验证--------- */
-
 /**
  * 新增的product加入数据库接口
  * @param {*} data 
  * @returns 
  */
 export const saveShopingObj = (data) => {
-    return post('/private/saveShopingObj', data);
+    return post('/private/addProduct', data);
 }
+
+
+/* --------以下还没验证--------- */
+
 
 /**
  * 发布公告的接口,主要实现就是新增的时候给存量用户或者是运营发送邮件

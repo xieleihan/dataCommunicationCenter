@@ -125,6 +125,22 @@ const routes = [
     {
         path : '/shoping/shopingAddView',
         number: '2-2'
+    },
+    {
+        path : '/shoping/storeManagement',
+        number: '2-3'
+    },
+    {
+        path : '/shoping/orderManagement',
+        number: '2-4'
+    },
+    {
+        path : '/shoping/customerInformation',
+        number: '2-5'
+    },
+    {
+        path : '/analyze/shopingOverview',
+        number: '3-1'
     }
 ]
 

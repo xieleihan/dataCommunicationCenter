@@ -1,6 +1,6 @@
 <template>
     <div class="customer">
-        <div class="title">商店信息</div>
+        <div class="title">客户信息</div>
         <div class="container">
             <!-- 客服 -->
             <div class="left">
@@ -27,6 +27,7 @@ import MessagesDetail from '../../../../components/shopping/messages/MessagesDet
     border: 1px solid #ccc;
     display: flex;
     flex-direction: column;
+    padding: .1rem;
     .title{
         font-size: .1rem;
         font-weight: bold;
@@ -38,16 +39,17 @@ import MessagesDetail from '../../../../components/shopping/messages/MessagesDet
         height: calc(100% - 0.2rem);
         display: flex;
         flex-direction: row;
+        border: 1px solid #ccc;
         .left,
         .right{
             height: 100%;
         }
         .left{
-            width: 30%;
+            width: 15%;
             border-right: 1px solid #ccc;
         }
         .right{
-            width: 70%;
+            width: 85%;
         }
     }
 }

@@ -27,6 +27,10 @@
                 <el-dialog v-model="dialogVisible">
                     <img w-full :src="dialogImageUrl" alt="Preview Image" />
                 </el-dialog>
+                <div class="titleBox">
+                    <span>店铺名称:</span>
+                    <el-input v-model="ShopingPreviewObject.storeName" placeholder="请输入店铺名称(必填)" />
+                </div>
                 <!-- 商品标题 -->
                 <div class="titleBox">
                     <span>商品标题:</span>
@@ -67,7 +71,7 @@
                 <!-- 商品标签 -->
                 <div class="titleBox">
                     <span>商品标签:</span>
-                    <el-tag v-for="tag in dynamicTags" :key="tag" closable :disable-transitions="false"
+                    <el-tag v-for="tag in ShopingPreviewObject.dynamicTags" :key="tag" closable :disable-transitions="false"
                         @close="handleClose(tag)">
                         {{ tag }}
                     </el-tag>
@@ -157,7 +161,7 @@
 import { reactive, ref, computed, onMounted, nextTick, watch } from 'vue';
 import { Plus } from '@element-plus/icons-vue';
 import ShopingPreviewView from './ShopingPreviewView.vue';
-import { getExchangeRate, initAddShoping, deleteUploadImage } from '../../../api/request';
+import { getExchangeRate, initAddShoping, deleteUploadImage, saveShopingObj } from '../../../api/request';
 import { nanoid } from 'nanoid';
 import { ElMessage } from 'element-plus';
 import { copyText } from '../../../utils/copyText';
@@ -174,6 +178,7 @@ const ShopingPreviewObject = reactive({
     tableData: [], // 详细参数表格
     dynamicTags: [], // 商品动态标签
     faq: '', // 商品FAQ
+    storeName: '', // 店铺名称
 })
 // 判断是否为本地开发环境
 const isLocalhost = window.location.hostname === 'localhost'
@@ -275,7 +280,7 @@ const InputRef = ref()
 
 // 处理标签关闭的回调
 const handleClose = (tag) => {
-    dynamicTags.value.splice(dynamicTags.value.indexOf(tag), 1)
+    ShopingPreviewObject.dynamicTags.splice(ShopingPreviewObject.dynamicTags.indexOf(tag), 1)
 }
 
 // 显示输入框的函数
@@ -289,7 +294,7 @@ const showInput = () => {
 // 处理输入框确认的回调
 const handleInputConfirm = () => {
     if (inputValue.value) {
-        dynamicTags.value.push(inputValue.value)
+        ShopingPreviewObject.dynamicTags.push(inputValue.value)
     }
     inputVisible.value = false
     inputValue.value = ''
@@ -348,7 +353,51 @@ const deleteTableData = (key, value) => {
 
 // 保存数据到数据库
 const saveShopObj = (obj) => {
-    
+    saveShopingObj(obj).then((res) => {
+        if (res.code === 200) {
+            ElMessage({
+                message: '保存成功',
+                type: 'success',
+                duration: 2000
+            })
+            // 清空ShopingPreviewObject
+            ShopingPreviewObject.fileList = []
+            ShopingPreviewObject.title = ''
+            ShopingPreviewObject.description = ''
+            ShopingPreviewObject.originalPrice = ''
+            ShopingPreviewObject.currentPrice = ''
+            ShopingPreviewObject.link = ''
+            ShopingPreviewObject.productList = []
+            ShopingPreviewObject.tableData = []
+            ShopingPreviewObject.dynamicTags = []
+            ShopingPreviewObject.faq = ''
+            ShopingPreviewObject.storeName = ''
+            // 重新生成唯一ID
+            const id = nanoid();
+            console.log('生成的唯一ID:', id)
+            // 初始化AddShoping数据
+            initAddShoping({ id }).then((res) => {
+                if (res.code === 200) {
+                    ShopingPreviewObject.link = id
+                }
+            }).catch((err) => {
+                console.error('初始化AddShoping数据失败:', err)
+            })
+        } else {
+            ElMessage({
+                message: '保存失败',
+                type: 'error',
+                duration: 2000
+            })
+        }
+    }).catch((err) => {
+        console.error('保存失败:', err)
+        ElMessage({
+            message: '保存失败',
+            type: 'error',
+            duration: 2000
+        })
+    })
 }
 
 // 发布公告逻辑
