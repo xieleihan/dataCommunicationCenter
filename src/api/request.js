@@ -167,7 +167,7 @@ export const publishMail = (data) => {
  * 获取所有入库商品列表(公共)
  */
 export const getShoppingList = (params) => {
-    return get('/public/getShoppingList', params);
+    return get('/public/getAllProduct', params);
 }
 
 /**
