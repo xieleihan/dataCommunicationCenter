@@ -176,3 +176,10 @@ export const getShoppingList = (params) => {
 export const changeShoppingProductInfo = (data) => {
     return post('/private/changeShoppingProductInfo', data);
 }
+
+/**
+ * 获取某一个productId的产品
+ */
+export const getProductById = (params) => {
+    return get('/public/getProductById', params);
+}

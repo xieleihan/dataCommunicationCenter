@@ -123,6 +123,10 @@ const routes = [
         number: '2-1'
     },
     {
+        path: '/shoping/shopingAllView/preview',
+        number: '2-1'
+    },
+    {
         path : '/shoping/shopingAddView',
         number: '2-2'
     },

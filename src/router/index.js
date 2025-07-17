@@ -167,6 +167,20 @@ const routes = [
                     requiresAuth: true, // 需要验证
                     permissions: ['admin', 'ordinary'], // 需要的权限
                 },
+                children: [
+                    {
+                        path: 'preview',
+                        name: 'PreviewShoping',
+                        component: () => import('../views/Modules/shoping/PreviewShoping.vue'),
+                        meta: {
+                            title: '商品预览',
+                            breadcrumb: '商品预览',
+                            requiresAuth: true, // 需要验证
+                            permissions: ['admin', 'ordinary'], // 需要的权限
+                        },
+                        props: true, // 允许将路由参数作为 props 传递给组件
+                    }
+                ]
             },
             {
                 path: 'shopingAddView',
