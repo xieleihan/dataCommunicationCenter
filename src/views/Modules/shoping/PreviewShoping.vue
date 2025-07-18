@@ -12,7 +12,7 @@
                     </el-carousel>
                 </div>
                 <div class="right">
-
+                    <ProductAllview :ShopingPreviewObject="ShopingPreviewObject" />
                 </div>
             </div>
             <div class="bottom">
@@ -23,10 +23,11 @@
 </template>
 
 <script setup>
-import { onUnmounted, defineEmits, onMounted, ref, computed } from 'vue';
+import { onUnmounted, defineEmits, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { getProductById } from '../../../api/request';
 import TabCom from '../../../components/shopping/TabCom.vue';
+import ProductAllview from "../../../views/Modules/shoping/modules/ProductAllview.vue";
 
 const emits = defineEmits(['closePreviewShoping']);
 const route = useRoute()

@@ -1,9 +1,9 @@
 <template>
     <div class="product">
         <!-- 商品标题 -->
-        <div class="title"></div>
+        <div class="title">{{ props.ShopingPreviewObject.title }}</div>
         <!-- 商品描述 -->
-        <div class="desc"></div>
+        <div class="desc">{{ props.ShopingPreviewObject.description}}</div>
         <!-- 价格盒子 -->
         <div class="picelBox" >
             <span>￥</span>
@@ -20,14 +20,30 @@
             <div class="currentPrice"></div>
         </div>
         <!-- 商店信息-->
-        <div class="storeName"></div>
+        <div class="storeName">{{props.ShopingPreviewObject.storeName}}</div>
         <!-- 商品标签 -->
-        <el-tag type="primary">Tag 1</el-tag>
+        <div>
+            <el-tag type="primary" v-for="(item,index) in JSON.parse(props.ShopingPreviewObject.dynamicTags)" :key="index">{{item}}</el-tag>
+        </div>
     </div>
 </template>
 
 <script setup>
+import { defineProps } from 'vue'
 
+const props = defineProps({
+    ShopingPreviewObject: {
+        type: Object,
+        default: () => ({
+            title: '',
+            description: '',
+            originalPrice: '',
+            currentPrice: '',
+            dynamicTags: [],
+            storeName: ''
+        })
+    }
+})
 </script>
 
 <style lang="scss" scoped>

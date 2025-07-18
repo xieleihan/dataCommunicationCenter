@@ -152,6 +152,12 @@ export const saveShopingObj = (data) => {
     return post('/private/addProduct', data);
 }
 
+/**
+ * 获取某一个productId的产品
+ */
+export const getProductById = (params) => {
+    return get('/public/getProductById', params);
+}
 
 /* --------以下还没验证--------- */
 
@@ -178,8 +184,8 @@ export const changeShoppingProductInfo = (data) => {
 }
 
 /**
- * 获取某一个productId的产品
+ * 获取所有店铺信息(公共)
  */
-export const getProductById = (params) => {
-    return get('/public/getProductById', params);
+export const getAllStoreInfo = (params) => {
+    return get('/public/getAllStoreInfo', params);
 }
