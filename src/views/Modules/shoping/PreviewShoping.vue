@@ -16,12 +16,7 @@
                 </div>
             </div>
             <div class="bottom">
-                <el-tabs type="border-card">
-                    <el-tab-pane label="User">User</el-tab-pane>
-                    <el-tab-pane label="Config">Config</el-tab-pane>
-                    <el-tab-pane label="Role">Role</el-tab-pane>
-                    <el-tab-pane label="Task">Task</el-tab-pane>
-                </el-tabs>
+                <TabCom :product-list="JSON.parse(ShopingPreviewObject.productList)" :table-data="JSON.parse(ShopingPreviewObject.tableData)" :product-faq="JSON.parse(ShopingPreviewObject.faq)" :type="'border-card'" />
             </div>
         </div>
     </div>
@@ -31,6 +26,7 @@
 import { onUnmounted, defineEmits, onMounted, ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { getProductById } from '../../../api/request';
+import TabCom from '../../../components/shopping/TabCom.vue';
 
 const emits = defineEmits(['closePreviewShoping']);
 const route = useRoute()

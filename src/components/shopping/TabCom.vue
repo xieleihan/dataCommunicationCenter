@@ -1,6 +1,6 @@
 <template>
     <div class="tabCom">
-        <el-tabs v-model="activeName" stretch="true">
+        <el-tabs :type="type === '' ? '': 'border-card'" v-model="activeName" stretch="true">
             <el-tab-pane name="productList" label="商品详情">
                 <ProductList :productList="productList" />
             </el-tab-pane>
@@ -33,6 +33,10 @@ const props = defineProps({
     productFaq: {
         type: String,
         default: () => ('')
+    },
+    type:{
+        type: String,
+        default: ()=> ('')
     }
 });
 

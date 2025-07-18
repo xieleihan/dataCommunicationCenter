@@ -22,7 +22,7 @@
             <div class="currentPrice">{{ formattedOriginalPrice }}</div>
         </div>
         <div class="tabBox">
-            <TabCom :productFaq="ShopingPreviewObject.faq" :tableData="ShopingPreviewObject.tableData" :productList="ShopingPreviewObject.productList" />
+            <TabCom :type="''" :productFaq="ShopingPreviewObject.faq" :tableData="ShopingPreviewObject.tableData" :productList="ShopingPreviewObject.productList" />
         </div>
     </div>
 </template>
