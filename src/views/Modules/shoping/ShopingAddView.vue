@@ -165,6 +165,7 @@ import { getExchangeRate, initAddShoping, deleteUploadImage, saveShopingObj } fr
 import { nanoid } from 'nanoid';
 import { ElMessage } from 'element-plus';
 import { copyText } from '../../../utils/copyText';
+import { toSvg } from "jdenticon";
 
 // 需要传递给预览的对象
 const ShopingPreviewObject = reactive({
@@ -179,12 +180,21 @@ const ShopingPreviewObject = reactive({
     dynamicTags: [], // 商品动态标签
     faq: '', // 商品FAQ
     storeName: '', // 店铺名称
+    storeAvater: '', // 店铺头像
 })
 // 判断是否为本地开发环境
 const isLocalhost = window.location.hostname === 'localhost'
 const base_url = ref(isLocalhost
     ? import.meta.env.VITE_BASE_API +'/upload'
     : import.meta.env.VITE_BASE_LAN_API + '/upload')
+
+// const svgAvatar = computed(() => {
+//     return toSvg(ShopingPreviewObject.storeName, 100)
+// })
+
+watch(() => ShopingPreviewObject.storeName, (newName) => {
+    ShopingPreviewObject.storeAvater = toSvg(newName, 100)
+})
 
 // 选择的汇率
 const exchangeRate = ref('USD');

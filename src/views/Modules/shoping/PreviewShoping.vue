@@ -84,7 +84,6 @@ onUnmounted(() => {
             }
             .right{
                 width: 68%;
-                background-color: #ccc;
             }
         }
         .buttom{

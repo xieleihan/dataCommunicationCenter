@@ -203,6 +203,20 @@ const routes = [
                     requiresAuth: true, // 需要验证
                     permissions: ['admin', 'ordinary'], // 需要的权限
                 },
+                children: [
+                    {
+                        path: 'storeDetail',
+                        name: 'StoreInfoView',
+                        component: () => import('../views/Modules/shoping/management/StoreInfoView.vue'),
+                        meta: {
+                            title: '店铺详情',
+                            breadcrumb: '店铺详情',
+                            requiresAuth: true, // 需要验证
+                            permissions: ['admin', 'ordinary'], // 需要的权限
+                        },
+                        props: true, // 允许将路由参数作为 props 传递给组件
+                    }
+                ]
             },
             {
                 path: 'customerInformation',

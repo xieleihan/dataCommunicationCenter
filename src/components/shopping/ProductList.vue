@@ -21,6 +21,7 @@ const props = defineProps({
         height: fit-content;
         img{
             height: auto;
+            width: 100%;
             object-fit: cover !important;
             max-height: fit-content !important;
         }

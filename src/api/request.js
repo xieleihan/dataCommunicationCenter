@@ -159,6 +159,19 @@ export const getProductById = (params) => {
     return get('/public/getProductById', params);
 }
 
+/**
+ * 获取所有店铺信息
+ */
+export const getAllStoreInfo = (params) => {
+    return get('/private/getAllStoreInfo', params);
+}
+
+/**
+ * 获取所有入库商品列表(公共)
+ */
+export const getShoppingList = (params) => {
+    return get('/public/getAllProduct', params);
+}
 /* --------以下还没验证--------- */
 
 
@@ -169,23 +182,10 @@ export const publishMail = (data) => {
     return post('/private/publishMail', data);
 }
 
-/**
- * 获取所有入库商品列表(公共)
- */
-export const getShoppingList = (params) => {
-    return get('/public/getAllProduct', params);
-}
 
 /**
  * 变动商品的信息(私有)
  */
 export const changeShoppingProductInfo = (data) => {
     return post('/private/changeShoppingProductInfo', data);
-}
-
-/**
- * 获取所有店铺信息(公共)
- */
-export const getAllStoreInfo = (params) => {
-    return get('/public/getAllStoreInfo', params);
 }
