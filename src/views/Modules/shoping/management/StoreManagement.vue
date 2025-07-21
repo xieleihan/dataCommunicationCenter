@@ -28,7 +28,7 @@
             </el-table-column>
         </el-table>
     </div>
-    <router-view v-else @closePreviewShoping="changeStatus"></router-view>
+    <router-view v-else @closePreviewShoping="changeStatus" :info="getStoreInfo"></router-view>
 </template>
 
 <script setup>
