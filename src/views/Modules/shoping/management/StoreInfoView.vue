@@ -6,12 +6,9 @@
             <div class="content">
                 <div class="avaterBox">
                     <span>头像图片:</span>
-                    <el-image
-                        :src="`data:image/svg+xml;utf8,${encodeURIComponent(info.storeAvater)}`"
-                        style="width: 100px; height: 100px;"
-                        fit="cover"
-                        @click="changeImage('`data:image/svg+xml;utf8,${encodeURIComponent(info.storeAvater)}`')"
-                    />
+                    <el-image :src="`data:image/svg+xml;utf8,${encodeURIComponent(info.storeAvater)}`"
+                        style="width: 50px; height: 50px;" fit="cover"
+                        @click="changeImage('`data:image/svg+xml;utf8,${encodeURIComponent(info.storeAvater)}`')" />
                 </div>
                 <div class="infoBox">
                     <span>店铺名:</span>
@@ -21,16 +18,28 @@
             </div>
         </div>
         <div class="bottom">
-            <el-table style="width: 100%">
-
-            </el-table>
+            <ProductTable :tableData="info.productList" @lookMore="lookMore" @lookPic="lookPic" />
         </div>
     </div>
+    <el-dialog v-model="showConfirm" title="提示" width="600px">
+        <p>是否要更换头像图片？</p>
+        <CanvasImage />
+
+        <template #footer>
+            <el-button @click="onCancel">取消</el-button>
+            <el-button type="primary" @click="onConfirm">确定</el-button>
+        </template>
+    </el-dialog>
 </template>
 
 <script setup>
-import { ElMessage,h } from 'element-plus';
-import { defineEmits, onUnmounted,defineProps } from 'vue';
+import { ElMessage, ElMessageBox } from 'element-plus';
+import { defineEmits, onUnmounted, defineProps,ref } from 'vue';
+import ProductTable from '../../../../components/shopping/ProductTable.vue';
+import { useRouter } from 'vue-router';
+import CanvasImage from '../../../../components/system/CanvasImage.vue';
+
+const router = useRouter();
 
 const emits = defineEmits(['closePreviewShoping']);
 const props = defineProps({
@@ -40,18 +49,31 @@ const props = defineProps({
     }
 });
 
-const changeImage = (imageUrl) => {
-    console.log("点击了头像图片，当前图片URL:", imageUrl);
-    ElMessage.confirm('是否要更换头像图片？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-    }).then(() => {
-        
+const showConfirm = ref(false)
+
+const lookMore = (link) => {
+    console.log("查看详情链接", link);
+    // 跳转到预览
+    router.push({ path: '/shoping/shopingAllView/preview', query: { productId: link } });
+}
+
+const lookPic = (url) => {
+    ElMessageBox.alert(`<img src="${url}" alt="商品图片" style="width: 100%; height: auto;">`, '商品图片', {
+        dangerouslyUseHTMLString: true,
+        showClose: true,
+        closeOnClickModal: true,
+        showCancelButton: false,
+        showConfirmButton: false,
+        center: true
     }).catch(() => {
-        ElMessage.info('已取消更换头像图片');
+        console.log("图片查看已关闭");
     });
-};
+}
+
+const changeImage = (imageUrl) => {
+    console.log("更换头像图片", imageUrl);
+    showConfirm.value = true; // 显示确认对话框
+}
 
 onUnmounted(() => {
     console.log("StoreInfoView组件卸载了");
@@ -64,5 +86,27 @@ onUnmounted(() => {
     width: 100%;
     height: 100%;
     overflow: auto;
+    .title{
+        font-size: .1rem;
+        border-bottom: 1px solid #ccc;
+        margin-bottom: .1rem;
+    }
+    .top{
+        font-size: .08rem;
+        .content{
+            display: flex;
+            flex-direction: row;
+            .avaterBox{
+                display: flex;
+                align-items: start;
+                margin-right: .1rem;
+            }
+            .infoBox{
+                display: flex;
+                flex-direction: row;
+                align-items: flex-start;
+            }
+        }
+    }
 }
 </style>

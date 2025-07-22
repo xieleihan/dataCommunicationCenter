@@ -5,47 +5,15 @@
             <keep-alive>
                 <div class="container"
                     :style="tableData.length === 0 ? 'display:flex;justify-content: center;align-items: center;' : 'display:flex;justify-content: center;align-items: flex-start;'">
-                    <el-table v-if="tableData.length !== 0" v-loading="tableData.length === 0" :data="tableData"
-                        :show-overflow-tooltip="true" style="width: 100%">
-                        <el-table-column prop="productId" label="商品ID"></el-table-column>
-                        <el-table-column prop="title" label="商品名称"></el-table-column>
-                        <el-table-column prop="desctipiton" label="商品描述"></el-table-column>
-                        <el-table-column prop="dynamicTags" label="商品标签">
-                            <template #default="scope">
-                                <el-tag v-for="(tag, index) in JSON.parse(scope.row.dynamicTags)" :key="index"
-                                    type="primary">{{ tag }}</el-tag>
-                            </template>
-                        </el-table-column>
-                        <el-table-column prop="currentPrice" label="现价"></el-table-column>
-                        <el-table-column prop="originalPrice" label="原价"></el-table-column>
-                        <el-table-column prop="fileList" label="轮播图">
-                            <template #default="scope">
-                                <el-image v-for="(item, index) in JSON.parse(scope.row.fileList)" :key="index"
-                                    :src="item.url" alt="商品图片" @click="lookPic(item.url)"
-                                    style="width: 50px; height: 50px; margin-right: 5px;" lazy />
-                            </template>
-                        </el-table-column>
-                        <el-table-column prop="productList" label="商品详情">
-                            <template #default="scope">
-                                <el-image v-for="(item, index) in JSON.parse(scope.row.productList)" :key="index"
-                                    :src="item.url" @click="lookPic(item.url)"
-                                    style="width: 50px; height: 50px; margin-right: 5px;" lazy fit="cover" />
-                            </template>
-                        </el-table-column>
-                        <el-table-column prop="faq" label="FAQ"></el-table-column>
-                        <el-table-column label="操作" width="200px">
-                            <template #default="scope">
-                                <el-button type="danger">修改</el-button>
-                                <el-button type="primary" @click="lookMore(scope.row.link)">查看详情</el-button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                    <el-empty v-else description="暂无商品数据" ></el-empty>
+                    <div style="width: 100%;" v-if="tableData.length !== 0" v-loading="tableData.length === 0">
+                        <ProductTable :tableData="tableData" @lookMore="lookMore" @lookPic="lookPic"></ProductTable>
+                    </div>
+                    <el-empty v-else description="暂无商品数据"></el-empty>
                 </div>
             </keep-alive>
         </div>
-        <router-view v-else @closePreviewShoping="changeStatus" ></router-view>
-        
+        <router-view v-else @closePreviewShoping="changeStatus"></router-view>
+
     </div>
 </template>
 
@@ -54,6 +22,7 @@ import { onMounted, onUnmounted, ref, watch, watchEffect } from 'vue';
 import { getShoppingList } from '../../../api/request';
 import { useRouter } from 'vue-router';
 import { ElMessageBox } from 'element-plus';
+import ProductTable from '../../../components/shopping/ProductTable.vue';
 
 const router = useRouter();
 
