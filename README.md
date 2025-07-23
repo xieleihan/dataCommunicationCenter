@@ -6,8 +6,10 @@
 
 > 前端: Vue3 + SCSS + JavaScript + Pinia + Element Plus
 > [点击访问](https://github.com/xieleihan/dataCommunicationCenter)
+>
 > 后端: Nodejs + Koa 
 > [点击访问](https://github.com/xieleihan/dataCommunicationCenter_backend)
+>
 > 数据库: MySQL
 > **在后端仓库的sql文件夹**
 
@@ -55,3 +57,7 @@
     │
     └ README.md // 阅读文档
 ```
+
+## 结尾
+
+> 感谢该项目中所运用到的开源项目的开发者,该项目永久开源,任何的使用,如果使用过程中有任何问题可以提`Issues`,或者有任何的修改也欢迎提`PR`

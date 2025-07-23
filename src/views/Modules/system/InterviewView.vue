@@ -32,7 +32,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 import * as echarts from 'echarts';
-import { china } from '../../../utils/china.js';
+import { china } from '../../../utils/china.ts';
 import { getChinaAccessList } from '../../../api/request.js';
 
 const radio = ref('1')
