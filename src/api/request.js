@@ -1,4 +1,4 @@
-import { get, post, getOut } from './index';
+import { get, post, getOut, postFormData, postOut } from './index';
 // 获取环境变量
 const githubOwner = import.meta.env.VITE_GITHUB_OWNER || 'xieleihan';
 const githubRepo = import.meta.env.VITE_GITHUB_REPO || 'dataCommunicationCenter';
@@ -188,4 +188,12 @@ export const publishMail = (data) => {
  */
 export const changeShoppingProductInfo = (data) => {
     return post('/private/changeShoppingProductInfo', data);
+}
+
+/**
+ * 修改店铺头像的接口
+ * @param {Object} data 包含店铺ID和新的头像文件
+ */
+export const changeStoreAvatar = (data) => {
+    return postFormData('/private/changeStoreAvatar', data);
 }

@@ -21,8 +21,9 @@
 </template>
 
 <script setup>
-import { ref, nextTick } from 'vue'
-import { ElMessage, ElDialog } from 'element-plus'
+import { ref, nextTick, defineExpose } from 'vue';
+import { ElMessage, ElDialog } from 'element-plus';
+
 import Cropper from 'cropperjs';
 
 const isLocalhost = window.location.hostname === 'localhost'
@@ -30,31 +31,37 @@ const base_url = ref(isLocalhost
     ? import.meta.env.VITE_BASE_API + '/upload'
     : import.meta.env.VITE_BASE_LAN_API + '/upload')
 
-const dialogImageUrl = ref('')
-const dialogVisible = ref(false)
-const uploadRef = ref(null)
+const dialogImageUrl = ref('');
+const dialogVisible = ref(false);
+const uploadRef = ref(null);
 
-const pic = ref(null)
+const pic = ref(null);
 const cropper = ref(null);
 const cropperImg = ref(null);
 
+// 定义暴露给父组件的方法
+defineExpose({
+    getCroppedBlob,
+    getOriginalPic: () => pic.value
+});
+
 const beforeUpload = (file) => {
-    const isValid = file.type.startsWith('image/')
+    const isValid = file.type.startsWith('image/');
     if (!isValid) {
-        ElMessage.error('只能上传图片文件')
+        ElMessage.error('只能上传图片文件');
     }
     return isValid
 }
 
 const handleSuccess = (uploadFile) => {
-    console.log('上传成功:', uploadFile)
+    console.log('上传成功:', uploadFile);
     if (uploadFile.errno == 0) {
         const obj = {
             url: uploadFile.data.url,
             name: uploadFile.data.alt,
             uid: Date.now() + Math.random().toString(36).substr(2, 9),
         }
-        pic.value = obj
+        pic.value = obj;
         nextTick(() => {
             if (cropper.value) cropper.value.destroy();
             cropper.value = new Cropper(cropperImg.value, {
@@ -64,9 +71,30 @@ const handleSuccess = (uploadFile) => {
             });
         });
     } else {
-        ElMessage.error('上传失败')
+        ElMessage.error('上传失败');
     }
 }
+
+const getCroppedBlob = () => {
+    return new Promise((resolve, reject) => {
+        if (!cropper.value) {
+            reject(new Error('裁剪器未初始化'));
+            return;
+        }
+
+        try {
+            cropper.value.getCroppedCanvas().toBlob((blob) => {
+                if (blob) {
+                    resolve(blob);
+                } else {
+                    reject(new Error('裁剪失败'));
+                }
+            }, 'image/jpeg', 0.8);
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
 
 const handlePictureCardPreview = (uploadFile) => {
     dialogImageUrl.value = uploadFile.url
@@ -76,29 +104,29 @@ const handlePictureCardPreview = (uploadFile) => {
 const handleRemove = (uploadFile) => {
     const filename = uploadFile.response?.data?.alt
     if (!filename) {
-        ElMessage.error('文件信息异常')
+        ElMessage.error('文件信息异常');
         return
     }
 
     deleteUploadImage({ filename })
         .then((res) => {
             if (res.code === 200) {
-                ElMessage.success('删除成功')
+                ElMessage.success('删除成功');
             } else {
-                ElMessage.error('删除失败')
+                ElMessage.error('删除失败');
             }
         })
         .catch((err) => {
-            console.error('删除失败:', err)
-            ElMessage.error('删除失败')
+            console.error('删除失败:', err);
+            ElMessage.error('删除失败');
         })
 
     pic.value = null
 }
 
 const handleExceed = () => {
-    ElMessage.warning('只能上传一张图片')
-    uploadRef.value?.clearFiles()
+    ElMessage.warning('只能上传一张图片');
+    uploadRef.value?.clearFiles();
 }
 </script>
 
