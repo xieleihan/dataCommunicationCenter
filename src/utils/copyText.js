@@ -1,4 +1,9 @@
 // 优雅降级
+/**
+ * 复制文本到剪贴板
+ * @param {String} text 需要复制的文本
+ * @returns {Boolean} 返回是否复制成功
+ */
 export async function copyText(text) {
     if (navigator.clipboard) {
         try {
@@ -14,6 +19,10 @@ export async function copyText(text) {
     }
 }
 
+/**
+ * 兼容性处理：使用textarea元素复制文本
+ * @param {String} text 需要复制的文本
+ */
 function fallbackCopyText(text) {
     const textarea = document.createElement('textarea');
     textarea.value = text;

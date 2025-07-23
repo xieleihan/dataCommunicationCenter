@@ -23,6 +23,7 @@
     </div>
     <el-dialog v-model="showConfirm" title="提示" width="600px">
         <p>是否要更换头像图片？</p>
+        
         <CanvasImage />
 
         <template #footer>

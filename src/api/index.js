@@ -78,3 +78,24 @@ export const postOut = async (url, data) => {
         throw error; // 继续抛出错误，供调用方捕获
     }
 };
+
+// 封装一个multipart/form-data的POST请求
+export const postFormData = async (url, formData) => {
+    try {
+        if (!(formData instanceof FormData)) {
+            throw new Error('参数必须是FormData类型');
+        }
+        const response = await instance({
+            url: `${host_url}${url}`,
+            method: 'post',
+            data: formData,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response;
+    } catch (error) {
+        console.error(`POST FormData 请求错误: ${url}`, error);
+        throw error; // 继续抛出错误，供调用方捕获
+    }
+}

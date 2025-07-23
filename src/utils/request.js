@@ -25,7 +25,12 @@ const instance = axios.create({
 instance.interceptors.request.use((config) => {
     const token = getCookie('AUTO_TOKEN');
     // console.log("获取到的token:", token);
-    config.headers['Authorization'] = token;
+    if (token) {
+        config.headers['Authorization'] = token;
+    } else {
+        console.warn('用户未登录或token不存在');
+    }
+    config.headers['Content-Type'] = config.headers['Content-Type'] || 'application/json';
     console.log("config:", config);
     // return config;
     return Promise.resolve(config);
