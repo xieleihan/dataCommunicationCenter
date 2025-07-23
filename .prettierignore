@@ -1,0 +1,22 @@
+# 依赖目录
+node_modules/
+dist/
+build/
+.nuxt/
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 配置文件
+.env*
+*.min.js
+*.min.css
+
+# Git相关
+.git/
+.gitignore
+
+# 其他
+coverage/
+*.log
