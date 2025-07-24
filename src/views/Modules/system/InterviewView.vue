@@ -9,7 +9,11 @@
                 <el-divider direction="vertical" border-style="dashed" />
             </el-col>
             <el-col v-show="radio === '1'" :span="24" style="display: flex;">
-                <div id="china-map" class="chinaMap"></div>
+                <div id="china-map" class="chinaMap" v-show="clickChinaProvince === ''"></div>
+                <div v-show="clickChinaProvince !== ''" class="province">
+                    <el-button @click="clickChinaProvince = ''">返回</el-button>
+                    <component :is="renderProvinceMap" />
+                </div>
                 <div class="list" style="width: 50%;" v-if="chinaDataList.length > 0">
                     <el-table :data="chinaDataList" style="width: 100%;height: 65dvh;" stripe>
                         <el-table-column prop="province" label="省份"></el-table-column>
@@ -34,12 +38,17 @@ import { ref, onMounted, watch } from 'vue'
 import * as echarts from 'echarts';
 import { china } from '../../../utils/china.ts';
 import { getChinaAccessList } from '../../../api/request.js';
+import chinaProvince from '../../../assets/json/chinaProvince.json'
+import GuangDong from '../../../components/layout/mapLayout/GuangDong.vue';
 
 const radio = ref('1')
 const dataList = ref({
     list: {}
 })
 const chinaDataList = ref([])
+const clickChinaProvince = ref('')
+const renderProvinceMap = ref();
+const chinaProvinceObj = chinaProvince
 
 function renderMap() {
     const chartDom = document.getElementById('china-map');
@@ -103,6 +112,7 @@ function renderMap() {
         console.log('点击的省份:', params.name);
         console.log('访问量:', params.value);
         console.log('完整数据:', params);
+        clickChinaProvince.value = params.name;
     });
 }
 
@@ -128,6 +138,19 @@ watch(radio, (val) => {
         console.log('世界地图');
     }
 });
+
+watch(clickChinaProvince, (val) => {
+    // 查找对应的省份对应的字符
+    const provinceData = chinaProvinceObj[val];
+    if (provinceData) {
+        console.log('点击的省份:', val);
+        console.log('对应的字符:', provinceData);
+    }
+    // 动态加载对应的省份组件
+    if (val === '广东') {
+        renderProvinceMap.value = GuangDong;
+    }
+})
 </script>
 
 <style scoped lang="scss">
@@ -140,7 +163,13 @@ watch(radio, (val) => {
         width: 50%;
         height: 100%;
         min-height: 65dvh;
-        
+
+    }
+
+    .province {
+        width: 50%;
+        height: 100%;
+        min-height: 60dvh;
     }
 }
 </style>
