@@ -32,19 +32,25 @@ const props = defineProps({
     }
 })
 
-const data = ref([])
+interface FaqItem {
+    F: string
+    A: string
+}
+const data = ref<FaqItem[]>([])
 
 watch(() => props.productFaq, (newVal) => {
     if (newVal) {
         // 解析F:xxx,A:xxx; {F: '问题1', A: '答案1'}
         data.value = newVal.split(';').map(item => {
             const parts = item.split(',');
-            const faqObj = {};
+            let F = '';
+            let A = '';
             parts.forEach(part => {
                 const [key, value] = part.split(':');
-                faqObj[key.trim()] = value.trim();
+                if (key.trim() === 'F') F = value ? value.trim() : '';
+                if (key.trim() === 'A') A = value ? value.trim() : '';
             });
-            return faqObj;
+            return { F, A } as FaqItem;
         });
     }
 }, { immediate: true })

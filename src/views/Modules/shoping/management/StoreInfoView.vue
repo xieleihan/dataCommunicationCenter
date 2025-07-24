@@ -6,58 +6,49 @@
             <div class="content">
                 <div class="avaterBox">
                     <span>头像图片:</span>
-                    <el-image
-                        :src="`data:image/svg+xml;utf8,${encodeURIComponent(info.storeAvater)}`"
-                        style="width: 50px; height: 50px;"
-                        fit="cover"
-                        @click="changeImage('`data:image/svg+xml;utf8,${encodeURIComponent(info.storeAvater)}`')"
-                    />
+                    <!-- 修复图片显示逻辑 -->
+                    <el-image :src="`data:image/svg+xml;utf8,${encodeURIComponent(info.storeAvater)}`"
+                        style="width: 50px; height: 50px;" fit="cover" @click="changeImage" />
                 </div>
                 <div class="infoBox">
                     <span>店铺名:</span>
                     <p>{{ info.storeName }}</p>
                 </div>
-                <!-- 后续扩展区域 -->
             </div>
         </div>
         <div class="bottom">
-            <ProductTable
-                :tableData="info.productList"
-                @lookMore="lookMore"
-                @lookPic="lookPic"
-            />
+            <ProductTable :tableData="info.productList" @lookMore="lookMore" @lookPic="lookPic" />
         </div>
     </div>
-    <el-dialog
-        v-model="showConfirm"
-        title="提示"
-        width="600px"
-    >
-        <p>是否要更换头像图片？</p>
 
-        <CanvasImage ref="canvasImageRef" />
+    <el-dialog v-model="showConfirm" title="提示" width="600px">
+        <p>是否要更换头像图片？</p>
+        <div style="width: 100%;display: flex;justify-content: space-between;">
+            <div class="left" style="width: 50%;">
+                <CanvasImage ref="canvasImageRef" @preview-update="updateRealTimePreview" />
+            </div>
+            <div class="right" style="width: 50%;">
+                <p>实时预览</p>
+                <img style="border-radius: 50%; width: 100px; height: 100px;" loading="lazy" :src="img" alt="预览图" />
+            </div>
+        </div>
 
         <template #footer>
             <el-button @click="onCancel">取消</el-button>
-            <el-button
-                type="primary"
-                @click="onConfirm"
-                :loading="confirmLoading"
-            >确定</el-button>
+            <el-button type="primary" @click="onConfirm" :loading="confirmLoading">确定</el-button>
         </template>
     </el-dialog>
 </template>
 
 <script setup>
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { defineEmits, onUnmounted, defineProps,ref } from 'vue';
+import { defineEmits, defineProps, ref } from 'vue';
 import ProductTable from '../../../../components/shopping/ProductTable.vue';
 import { useRouter } from 'vue-router';
 import CanvasImage from '../../../../components/system/CanvasImage.vue';
 import { changeStoreAvatar } from '../../../../api/request';
 
 const router = useRouter();
-
 const emits = defineEmits(['closePreviewShoping']);
 const props = defineProps({
     info: {
@@ -69,10 +60,10 @@ const props = defineProps({
 const showConfirm = ref(false);
 const canvasImageRef = ref(null);
 const confirmLoading = ref(false);
+const img = ref('');
 
 const lookMore = (link) => {
     console.log("查看详情链接", link);
-    // 跳转到预览
     router.push({ path: '/shoping/shopingAllView/preview', query: { productId: link } });
 }
 
@@ -89,14 +80,19 @@ const lookPic = (url) => {
     });
 }
 
-const changeImage = (imageUrl) => {
-    console.log("更换头像图片", imageUrl);
-    showConfirm.value = true; // 显示确认对话框
+const changeImage = async () => {
+    showConfirm.value = true;
+    // 打开对话框后重置预览图
+    img.value = '';
 }
 
-// 确认更换头像
+const updateRealTimePreview = (previewUrl) => {
+    console.log('接收到预览图:', previewUrl);
+    img.value = previewUrl;
+}
+
 const onConfirm = async () => {
-    confirmLoading.value = true; // 开启加载状态
+    confirmLoading.value = true;
     try {
         const originalPic = canvasImageRef.value?.getOriginalPic();
         if (!originalPic) {
@@ -110,17 +106,15 @@ const onConfirm = async () => {
             return;
         }
 
-        // 创建FormData发送到后端
         const formData = new FormData();
         formData.append('croppedImage', croppedBlob, 'cropped-image.jpg');
-        formData.append('originalUrl', originalPic.url); // 如果需要原始图片URL
+        formData.append('originalUrl', originalPic.url);
 
-        // 调用API发送数据到后端
         changeStoreAvatar(formData).then((res) => {
             if (res.code === 200) {
                 ElMessage.success('头像更换成功');
-                showConfirm.value = false; // 关闭确认对话框
-                emits('closePreviewShoping'); // 触发关闭事件
+                showConfirm.value = false;
+                emits('closePreviewShoping');
             } else {
                 ElMessage.error('头像更换失败，请稍后再试');
             }
@@ -136,17 +130,10 @@ const onConfirm = async () => {
     }
 }
 
-// 取消更换头像
 const onCancel = () => {
-    console.log("取消更换头像");
-    showConfirm.value = false; // 关闭确认对话框
+    showConfirm.value = false;
     ElMessage.info('已取消更换头像');
 }
-
-onUnmounted(() => {
-    console.log("StoreInfoView组件卸载了");
-    emits('closePreviewShoping'); // 组件卸载时触发关闭事件
-})
 </script>
 
 <style lang="scss" scoped>

@@ -1,139 +1,330 @@
 <template>
     <div class="canvasImage">
-        <div class="left">
-            <el-upload ref="uploadRef" :action="base_url" list-type="picture-card" :on-success="handleSuccess"
-                :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-exceed="handleExceed" :limit="1"
-                :before-upload="beforeUpload" v-if="pic === null">
-                <el-icon>
-                    <Plus />
-                </el-icon>
-            </el-upload>
-        </div>
-        <div class="right" v-if="pic !== null">
-            <img ref="cropperImg" :src="pic.url" loading="lazy" style="max-width: 100%;" />
+        <input type="file" accept="image/*" @change="onFileChange" />
+        <div class="canvas-container" ref="container">
+            <canvas ref="canvas" :width="canvasWidth" :height="canvasHeight" @mousedown="startDrag" @mousemove="onDrag"
+                @mouseup="endDrag" @mouseleave="endDrag" style="cursor: crosshair;"></canvas>
         </div>
     </div>
-
-    <!-- 图片预览对话框 -->
-    <el-dialog v-model="dialogVisible" title="图片预览">
-        <img :src="dialogImageUrl" style="width: 100%" />
-    </el-dialog>
 </template>
 
 <script setup>
-import { ref, nextTick, defineExpose } from 'vue';
-import { ElMessage, ElDialog } from 'element-plus';
+import { ref, watch, defineEmits, defineExpose } from 'vue';
 
-import Cropper from 'cropperjs';
+const emit = defineEmits(['preview-update']);
+const canvas = ref(null);
+const container = ref(null);
 
-const isLocalhost = window.location.hostname === 'localhost'
-const base_url = ref(isLocalhost
-    ? import.meta.env.VITE_BASE_API + '/upload'
-    : import.meta.env.VITE_BASE_LAN_API + '/upload')
+const img = new Image();
+const imgWidth = ref(0);
+const imgHeight = ref(0);
+const canvasWidth = ref(400);
+const canvasHeight = ref(300);
 
-const dialogImageUrl = ref('');
-const dialogVisible = ref(false);
-const uploadRef = ref(null);
+// 裁剪框属性
+const cropX = ref(50);
+const cropY = ref(50);
+const cropW = ref(150);
+const cropH = ref(150);
 
-const pic = ref(null);
-const cropper = ref(null);
-const cropperImg = ref(null);
+// 拖动状态
+const isDragging = ref(false);
+const dragType = ref(''); // 'move', 'resize-tl', 'resize-tr', 'resize-bl', 'resize-br'
+const startX = ref(0);
+const startY = ref(0);
+const startCropX = ref(0);
+const startCropY = ref(0);
+const startCropW = ref(0);
+const startCropH = ref(0);
 
-// 定义暴露给父组件的方法
-defineExpose({
-    getCroppedBlob,
-    getOriginalPic: () => pic.value
-});
+// 图片上传处理
+const onFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-const beforeUpload = (file) => {
-    const isValid = file.type.startsWith('image/');
-    if (!isValid) {
-        ElMessage.error('只能上传图片文件');
-    }
-    return isValid
-}
-
-const handleSuccess = (uploadFile) => {
-    console.log('上传成功:', uploadFile);
-    if (uploadFile.errno == 0) {
-        const obj = {
-            url: uploadFile.data.url,
-            name: uploadFile.data.alt,
-            uid: Date.now() + Math.random().toString(36).substr(2, 9),
-        }
-        pic.value = obj;
-        nextTick(() => {
-            if (cropper.value) cropper.value.destroy();
-            cropper.value = new Cropper(cropperImg.value, {
-                aspectRatio: 1,
-                viewMode: 1,
-                autoCropArea: 1,
-            });
-        });
-    } else {
-        ElMessage.error('上传失败');
-    }
-}
-
-const getCroppedBlob = () => {
-    return new Promise((resolve, reject) => {
-        if (!cropper.value) {
-            reject(new Error('裁剪器未初始化'));
-            return;
-        }
-
-        try {
-            cropper.value.getCroppedCanvas().toBlob((blob) => {
-                if (blob) {
-                    resolve(blob);
-                } else {
-                    reject(new Error('裁剪失败'));
-                }
-            }, 'image/jpeg', 0.8);
-        } catch (error) {
-            reject(error);
-        }
-    });
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
 };
 
-const handlePictureCardPreview = (uploadFile) => {
-    dialogImageUrl.value = uploadFile.url
-    dialogVisible.value = true
-}
+// 图片加载完成后绘制到 canvas 上
+img.onload = () => {
+    imgWidth.value = img.width;
+    imgHeight.value = img.height;
 
-const handleRemove = (uploadFile) => {
-    const filename = uploadFile.response?.data?.alt
-    if (!filename) {
-        ElMessage.error('文件信息异常');
-        return
+    // 计算合适的画布尺寸
+    const maxWidth = 600;
+    const maxHeight = 400;
+    const ratio = Math.min(maxWidth / img.width, maxHeight / img.height);
+    canvasWidth.value = img.width * ratio;
+    canvasHeight.value = img.height * ratio;
+
+    // 初始化裁剪框位置（居中）
+    cropX.value = (canvasWidth.value - cropW.value) / 2;
+    cropY.value = (canvasHeight.value - cropH.value) / 2;
+
+    drawImage();
+    emitPreview(); // 初始预览
+};
+
+// 绘制原图和裁剪区域
+const drawImage = () => {
+    if (!canvas.value) return;
+
+    const context = canvas.value.getContext('2d');
+    context.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+
+    // 绘制原图
+    context.drawImage(img, 0, 0, canvasWidth.value, canvasHeight.value);
+
+    // 只绘制裁剪框边框（不需要遮罩）
+    context.strokeStyle = '#00ff00';
+    context.lineWidth = 2;
+    context.strokeRect(cropX.value, cropY.value, cropW.value, cropH.value);
+
+    // 绘制裁剪框的角点和边线手柄
+    const cornerSize = 8;
+    context.fillStyle = '#00ff00';
+
+    // 四个角点
+    context.fillRect(cropX.value - cornerSize / 2, cropY.value - cornerSize / 2, cornerSize, cornerSize);
+    context.fillRect(cropX.value + cropW.value - cornerSize / 2, cropY.value - cornerSize / 2, cornerSize, cornerSize);
+    context.fillRect(cropX.value - cornerSize / 2, cropY.value + cropH.value - cornerSize / 2, cornerSize, cornerSize);
+    context.fillRect(cropX.value + cropW.value - cornerSize / 2, cropY.value + cropH.value - cornerSize / 2, cornerSize, cornerSize);
+
+    // 四条边的中点手柄
+    const handleSize = 6;
+    context.fillRect(cropX.value + cropW.value / 2 - handleSize / 2, cropY.value - handleSize / 2, handleSize, handleSize);
+    context.fillRect(cropX.value + cropW.value / 2 - handleSize / 2, cropY.value + cropH.value - handleSize / 2, handleSize, handleSize);
+    context.fillRect(cropX.value - handleSize / 2, cropY.value + cropH.value / 2 - handleSize / 2, handleSize, handleSize);
+    context.fillRect(cropX.value + cropW.value - handleSize / 2, cropY.value + cropH.value / 2 - handleSize / 2, handleSize, handleSize);
+};
+
+// 获取鼠标在canvas上的坐标
+const getMousePos = (e) => {
+    const rect = canvas.value.getBoundingClientRect();
+    return {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+    };
+};
+
+// 判断鼠标位置
+const getDragType = (x, y) => {
+    const cornerSize = 8;
+    const tolerance = 10;
+
+    // 检查是否在角点上
+    // 左上角
+    if (Math.abs(x - cropX.value) < tolerance && Math.abs(y - cropY.value) < tolerance) {
+        return 'resize-tl';
+    }
+    // 右上角
+    if (Math.abs(x - (cropX.value + cropW.value)) < tolerance && Math.abs(y - cropY.value) < tolerance) {
+        return 'resize-tr';
+    }
+    // 左下角
+    if (Math.abs(x - cropX.value) < tolerance && Math.abs(y - (cropY.value + cropH.value)) < tolerance) {
+        return 'resize-bl';
+    }
+    // 右下角
+    if (Math.abs(x - (cropX.value + cropW.value)) < tolerance && Math.abs(y - (cropY.value + cropH.value)) < tolerance) {
+        return 'resize-br';
     }
 
-    deleteUploadImage({ filename })
-        .then((res) => {
-            if (res.code === 200) {
-                ElMessage.success('删除成功');
-            } else {
-                ElMessage.error('删除失败');
+    // 检查是否在裁剪框内部（用于移动）
+    if (x > cropX.value && x < cropX.value + cropW.value &&
+        y > cropY.value && y < cropY.value + cropH.value) {
+        return 'move';
+    }
+
+    return '';
+};
+
+// 开始拖动
+const startDrag = (e) => {
+    const pos = getMousePos(e);
+    dragType.value = getDragType(pos.x, pos.y);
+
+    if (dragType.value) {
+        isDragging.value = true;
+        startX.value = pos.x;
+        startY.value = pos.y;
+        startCropX.value = cropX.value;
+        startCropY.value = cropY.value;
+        startCropW.value = cropW.value;
+        startCropH.value = cropH.value;
+        e.preventDefault();
+    }
+};
+
+// 拖动过程中
+const onDrag = (e) => {
+    if (!isDragging.value) return;
+
+    const pos = getMousePos(e);
+    const dx = pos.x - startX.value;
+    const dy = pos.y - startY.value;
+
+    switch (dragType.value) {
+        case 'move':
+            cropX.value = Math.max(0, Math.min(canvasWidth.value - cropW.value, startCropX.value + dx));
+            cropY.value = Math.max(0, Math.min(canvasHeight.value - cropH.value, startCropY.value + dy));
+            break;
+
+        case 'resize-tl':
+            // 左上角调整大小
+            const newW1 = startCropW.value - dx;
+            const newH1 = startCropH.value - dy;
+            if (newW1 > 20 && newH1 > 20) {
+                cropX.value = startCropX.value + dx;
+                cropY.value = startCropY.value + dy;
+                cropW.value = newW1;
+                cropH.value = newH1;
             }
-        })
-        .catch((err) => {
-            console.error('删除失败:', err);
-            ElMessage.error('删除失败');
-        })
+            break;
 
-    pic.value = null
-}
+        case 'resize-tr':
+            // 右上角调整大小
+            const newW2 = startCropW.value + dx;
+            const newH2 = startCropH.value - dy;
+            if (newW2 > 20 && newH2 > 20) {
+                cropY.value = startCropY.value + dy;
+                cropW.value = newW2;
+                cropH.value = newH2;
+            }
+            break;
 
-const handleExceed = () => {
-    ElMessage.warning('只能上传一张图片');
-    uploadRef.value?.clearFiles();
-}
+        case 'resize-bl':
+            // 左下角调整大小
+            const newW3 = startCropW.value - dx;
+            const newH3 = startCropH.value + dy;
+            if (newW3 > 20 && newH3 > 20) {
+                cropX.value = startCropX.value + dx;
+                cropW.value = newW3;
+                cropH.value = newH3;
+            }
+            break;
+
+        case 'resize-br':
+            // 右下角调整大小
+            const newW4 = startCropW.value + dx;
+            const newH4 = startCropH.value + dy;
+            if (newW4 > 20 && newH4 > 20) {
+                cropW.value = newW4;
+                cropH.value = newH4;
+            }
+            break;
+    }
+
+    drawImage();
+    emitPreview();
+};
+
+// 结束拖动
+const endDrag = () => {
+    isDragging.value = false;
+    dragType.value = '';
+};
+
+// 导出裁剪结果
+const emitPreview = () => {
+    if (!img.complete || imgWidth.value === 0) return;
+
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = cropW.value * (imgWidth.value / canvasWidth.value);
+    tempCanvas.height = cropH.value * (imgHeight.value / canvasHeight.value);
+
+    const tempCtx = tempCanvas.getContext('2d');
+
+    // 计算实际图片坐标
+    const scaleX = imgWidth.value / canvasWidth.value;
+    const scaleY = imgHeight.value / canvasHeight.value;
+
+    tempCtx.drawImage(
+        img,
+        cropX.value * scaleX,
+        cropY.value * scaleY,
+        cropW.value * scaleX,
+        cropH.value * scaleY,
+        0,
+        0,
+        tempCanvas.width,
+        tempCanvas.height
+    );
+
+    tempCanvas.toBlob((blob) => {
+        if (blob) {
+            const url = URL.createObjectURL(blob);
+            emit('preview-update', url);
+        }
+    }, 'image/jpeg', 0.8);
+};
+
+// 实时监听裁剪区域变化
+watch([cropX, cropY, cropW, cropH], () => {
+    drawImage();
+    emitPreview();
+});
+
+// 暴露方法给父组件
+defineExpose({
+    getCroppedBlob: () => {
+        return new Promise((resolve) => {
+            if (!img.complete || imgWidth.value === 0) {
+                resolve(null);
+                return;
+            }
+
+            const tempCanvas = document.createElement('canvas');
+            const scaleX = imgWidth.value / canvasWidth.value;
+            const scaleY = imgHeight.value / canvasHeight.value;
+
+            tempCanvas.width = cropW.value * scaleX;
+            tempCanvas.height = cropH.value * scaleY;
+
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCtx.drawImage(
+                img,
+                cropX.value * scaleX,
+                cropY.value * scaleY,
+                cropW.value * scaleX,
+                cropH.value * scaleY,
+                0,
+                0,
+                tempCanvas.width,
+                tempCanvas.height
+            );
+
+            tempCanvas.toBlob((blob) => {
+                resolve(blob);
+            }, 'image/jpeg', 0.8);
+        });
+    },
+    getOriginalPic: () => ({ url: img.src }),
+});
 </script>
 
-<style lang="scss" scoped>
-.canvasImage{
+<style scoped>
+.canvasImage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 100%;
     height: 100%;
-    display: flex;
+}
+
+.canvas-container {
+    border: 1px solid #ccc;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+}
+
+canvas {
+    display: block;
+    width: 100%;
 }
 </style>

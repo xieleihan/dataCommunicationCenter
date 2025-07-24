@@ -99,6 +99,11 @@ function renderMap() {
     };
 
     myChart.setOption(option);
+    myChart.on('click', (params) => {
+        console.log('点击的省份:', params.name);
+        console.log('访问量:', params.value);
+        console.log('完整数据:', params);
+    });
 }
 
 onMounted(async () => {
