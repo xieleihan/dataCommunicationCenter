@@ -56,6 +56,9 @@ def process_ts_files(directory_path):
                 continue
             
             # 创建新的内容（在原内容前添加导出语句）
+            if file_name_without_ext.isdigit():
+                file_name_without_ext = '$' + file_name_without_ext
+
             new_content = f"export const {file_name_without_ext} = {content}"
             
             # 写回文件
@@ -85,12 +88,17 @@ def is_valid_variable_name(name):
     Returns:
         bool: 是否符合规范
     """
+    processed_name = name
+    if name.isdigit():
+        processed_name = '$' + name
+        return True
+
     # 不能以数字开头
     if name[0].isdigit():
         return False
-    
+
     # 只能包含字母、数字、下划线，且不能是JavaScript保留字
-    if not re.match(r'^[a-zA-Z_$][a-zA-Z0-9_$]*$', name):
+    if not re.match(r'^[a-zA-Z_$][a-zA-Z0-9_$]*$', processed_name):
         return False
     
     # 检查是否为JavaScript保留字
@@ -105,7 +113,7 @@ def is_valid_variable_name(name):
         'throws', 'transient', 'volatile', 'null', 'true', 'false'
     }
     
-    return name not in reserved_words
+    return processed_name not in reserved_words
 
 def process_ts_files_advanced(directory_path, backup=True, preview=False):
     """
