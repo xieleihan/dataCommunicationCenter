@@ -39,7 +39,7 @@ import * as echarts from 'echarts';
 import { china } from '../../../utils/china.ts';
 import { getChinaAccessList } from '../../../api/request.js';
 import chinaProvince from '../../../assets/json/chinaProvince.json'
-import GuangDong from '../../../components/layout/mapLayout/GuangDong.vue';
+import { GuangDong,BeiJing,ShangHai } from '../../../components/layout/mapLayout/index.js';
 
 const radio = ref('1')
 const dataList = ref({
@@ -147,8 +147,19 @@ watch(clickChinaProvince, (val) => {
         console.log('对应的字符:', provinceData);
     }
     // 动态加载对应的省份组件
-    if (val === '广东') {
-        renderProvinceMap.value = GuangDong;
+    switch (val) {
+        case '广东':
+            renderProvinceMap.value = GuangDong;
+            break;
+        case '北京':
+            renderProvinceMap.value = BeiJing;
+            break;
+        case '上海':
+            renderProvinceMap.value = ShangHai;
+            break;
+        default:
+            renderProvinceMap.value = null; // 如果没有对应的组件，清空
+            break;
     }
 })
 </script>

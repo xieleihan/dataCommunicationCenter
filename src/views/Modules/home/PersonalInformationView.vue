@@ -1,6 +1,6 @@
 <template>
     <div class="personalInformationView">
-        
+        个人信息
     </div>
 </template>
 
