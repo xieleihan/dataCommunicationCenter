@@ -17,7 +17,7 @@ import ZheJiang from './ZheJiang.vue'; // 浙江
 import JiangXi from './JiangXi.vue'; // 江西
 import HuBei from './HuBei.vue'; // 湖北
 import GuangXi from './GuangXi.vue'; // 广西
-import GanSu from './GanSu.Vue'; // 甘肃
+import GanSu from './GanSu.vue'; // 甘肃
 import ShanXi1 from './ShanXi1.vue'; // 山西
 import ShanXi from './ShanXi.vue'; // 陕西
 import NeiMengGu from './NeiMengGu.vue'; // 内蒙古

@@ -39,7 +39,7 @@ import * as echarts from 'echarts';
 import { china } from '../../../utils/china.ts';
 import { getChinaAccessList } from '../../../api/request.js';
 import chinaProvince from '../../../assets/json/chinaProvince.json'
-import { GuangDong,BeiJing,ShangHai } from '../../../components/layout/mapLayout/index.js';
+import { GuangDong, BeiJing, ShangHai, TianJin, ChongQing, HeBei, HeNan, YunNan, LiaoNing, HeiLongJiang, HuNan, AnHui, ShangDong, XinJiang, JiangSu, ZheJiang, JiangXi, HuBei, GuangXi, GanSu, ShanXi1, ShanXi, NeiMengGu, FuJian, GuiZhou, XiZang, HaiNan, QingHai, NingXia, XiangGang, AoMen, Taiwan } from '../../../components/layout/mapLayout/index.js';
 
 const radio = ref('1')
 const dataList = ref({
@@ -156,6 +156,93 @@ watch(clickChinaProvince, (val) => {
             break;
         case '上海':
             renderProvinceMap.value = ShangHai;
+            break;
+        case '天津':
+            renderProvinceMap.value = TianJin;
+            break;
+        case '重庆':
+            renderProvinceMap.value = ChongQing;
+            break;
+        case '河北':
+            renderProvinceMap.value = HeBei;
+            break;
+        case '河南':
+            renderProvinceMap.value = HeNan;
+            break;
+        case '云南':
+            renderProvinceMap.value = YunNan;
+            break;
+        case '辽宁':
+            renderProvinceMap.value = LiaoNing;
+            break;
+        case '黑龙江':
+            renderProvinceMap.value = HeiLongJiang;
+            break;
+        case '湖南':
+            renderProvinceMap.value = HuNan;
+            break;
+        case '安徽':
+            renderProvinceMap.value = AnHui;
+            break;
+        case '山东':
+            renderProvinceMap.value = ShangDong;
+            break;
+        case '新疆':
+            renderProvinceMap.value = XinJiang;
+            break;
+        case '江苏':
+            renderProvinceMap.value = JiangSu;
+            break;
+        case '浙江':
+            renderProvinceMap.value = ZheJiang;
+            break;
+        case '江西':
+            renderProvinceMap.value = JiangXi;
+            break;
+        case '湖北':
+            renderProvinceMap.value = HuBei;
+            break;
+        case '广西':
+            renderProvinceMap.value = GuangXi;
+            break;
+        case '甘肃':
+            renderProvinceMap.value = GanSu;
+            break;
+        case '山西':
+            renderProvinceMap.value = ShanXi1;
+            break;
+        case '陕西':
+            renderProvinceMap.value = ShanXi;
+            break;
+        case '内蒙古':
+            renderProvinceMap.value = NeiMengGu;
+            break;
+        case '福建':
+            renderProvinceMap.value = FuJian;
+            break;
+        case '贵州':
+            renderProvinceMap.value = GuiZhou;
+            break;
+        case '西藏':
+            renderProvinceMap.value = XiZang;
+            break;
+        case '海南':
+            renderProvinceMap.value = HaiNan;
+            break;
+        case '青海':
+            renderProvinceMap.value = QingHai;
+            break;
+        case '宁夏':
+            renderProvinceMap.value = NingXia;
+            break;
+        case '香港':
+            renderProvinceMap.value = XiangGang;
+            break;
+        case '澳门':
+            renderProvinceMap.value = AoMen;
+            break;
+        case '台湾':
+            renderProvinceMap.value = Taiwan;
             break;
         default:
             renderProvinceMap.value = null; // 如果没有对应的组件，清空
